@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Offer Poster Studio – Offer Poster Maker for Indian Businesses</title>
+<meta name="description" content="Create professional offer posters in minutes for supermarkets, shops, restaurants and businesses across India. Design, download and share promotional posters in English and Malayalam — free to start.">
+<meta name="keywords" content="offer poster maker, offer poster maker india, free offer poster maker, business poster maker, shop poster maker, sale poster maker, poster design app, supermarket offer poster, restaurant offer poster, clothing sale poster, jewellery offer poster, grocery offer poster, mobile shop offer poster, festival poster maker, whatsapp poster maker, instagram poster maker, facebook poster maker, malayalam poster maker, indian business poster maker, discount poster template, shop offer banner design, festival offer poster, Kerala poster maker, WhatsApp offer poster maker">
+<meta property="og:title" content="Offer Poster Studio – Offer Poster Maker for Indian Businesses">
+<meta property="og:description" content="Create professional offer posters in minutes for supermarkets, shops, restaurants and businesses across India. Free to start, in English and Malayalam.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.offerposterstudio.in">
+<meta property="og:site_name" content="Offer Poster Studio">
+<meta name="theme-color" content="#0E6E5D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bowlby+One+SC&family=Bungee&family=Bungee+Shade&family=Chango&family=Coiny&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Luckiest+Guy&family=Lilita+One&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Malayalam:wght@400;600;700&family=Baloo+Chettan+2:wght@400;500;600;700;800&family=Manjari:wght@400;700&family=Chilanka&family=Gayathri:wght@400;700&family=Noto+Serif+Malayalam:wght@400;600;700&family=Suranna&family=Uroob&family=Paytone+One&family=Righteous&family=Russo+One&family=Titan+One&family=Baloo+2:wght@400;500;600;700;800&family=Yatra+One&family=Kalam:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Baloo+Da+2:wght@400;500;600;700;800&family=Galada&family=Noto+Sans+Bengali:wght@400;600;700&family=Baloo+Paaji+2:wght@400;500;600;700;800&family=Mukta+Mahee:wght@400;700&family=Noto+Sans+Gurmukhi:wght@400;600;700&family=Baloo+Bhai+2:wght@400;500;600;700;800&family=Rasa:wght@400;700&family=Noto+Sans+Gujarati:wght@400;600;700&family=Baloo+Bhaina+2:wght@400;500;600;700;800&family=Utsaah&family=Noto+Sans+Oriya:wght@400;600;700&family=Baloo+Thambi+2:wght@400;500;600;700;800&family=Kavivanar&family=Noto+Sans+Tamil:wght@400;600;700&family=Baloo+Tammudu+2:wght@400;500;600;700;800&family=Mallanna&family=Noto+Sans+Telugu:wght@400;600;700&family=Baloo+Tamma+2:wght@400;500;600;700;800&family=Hubballi&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Gulzar&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <nav class="desktop-navbar" id="desktopNavbar">
+    <div class="navbar-inner">
+      <div class="brand"><div class="mark">OP</div>Offer Poster Studio</div>
+      <div class="nav-links">
+        <a onclick="handleNavHome()">Home</a>
+        <a onclick="handleNavTemplates()">Templates</a>
+        <a onclick="handleNavFeatures()">Features</a>
+        <a onclick="handleNavPricing()">Pricing</a>
+        <a onclick="handleNavContact()">Contact</a>
+        <a onclick="handleNavCreate()">Create Poster</a>
+      </div>
+      <div class="nav-cta" id="navCtaArea"></div>
+    </div>
+  </nav>
+
+  <section class="screen" id="screen-auth">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-logo"><div class="mark">OP</div></div>
+        <h1 class="auth-title" id="authTitle">Welcome back</h1>
+        <p class="auth-sub" id="authSub">Sign in to keep making posters that sell.</p>
+
+        <button class="btn btn-outline btn-block" style="margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px;" onclick="signInWithGoogle()">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.5 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3 16.3 3 9.7 7.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 45c5.5 0 10.3-1.8 13.7-4.9l-6.3-5.3C29.5 36.5 26.9 37.5 24 37.5c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.6 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.3 5.3C40.9 36.4 45 30.8 45 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+          Continue with Google
+        </button>
+        <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:6px;">
+          <a href="#" style="color:var(--teal);font-weight:700;" onclick="toggleEmailAuthForm();return false;" id="emailToggleLink">Sign in with email instead</a>
+        </div>
+
+        <div id="emailAuthForm" style="display:none;">
+          <div class="auth-tabs">
+            <div class="auth-tab active" id="tabLogin" onclick="setAuthMode('login')">Log In</div>
+            <div class="auth-tab" id="tabSignup" onclick="setAuthMode('signup')">Sign Up</div>
+          </div>
+          <div id="signupExtra" style="display:none;">
+            <div class="field"><label>Shop / Business name</label><input type="text" id="signupShop" placeholder="e.g. Anand Supermarket"></div>
+          </div>
+          <div class="field"><label>Email</label><input type="email" id="authEmail" placeholder="you@shop.com"></div>
+          <div class="field"><label>Password</label><input type="password" id="authPassword" placeholder="••••••••">
+            <div style="text-align:right;margin-top:6px;"><a href="#" style="font-size:12px;color:var(--teal);font-weight:700;" onclick="openForgot();return false;">Forgot password?</a></div>
+          </div>
+          <div id="authError" class="error-text" style="display:none;margin-bottom:10px;"></div>
+          <button class="btn btn-primary btn-block" onclick="submitAuth()" id="authSubmitBtn">Log In</button>
+          <div class="auth-switch" id="authSwitchText">New here? <a href="#" onclick="setAuthMode('signup');return false;">Create an account</a></div>
+        </div>
+      </div>
+      <p class="footer-note" style="color:rgba(251,246,234,0.55);">Offer Poster Studio · Made for Indian Businesses</p>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-landing">
+    <div class="landing-header">
+      <div class="brand"><div class="mark">OP</div>Offer Poster Studio</div>
+      <button class="btn btn-primary btn-sm" onclick="showAuth();setAuthMode('login')">Login</button>
+    </div>
+
+    <div class="hero">
+      <div class="hero-copy">
+        <span class="hero-eyebrow">⚡ Ready in under 60 seconds</span>
+        <h1>Create Stunning <em>Offer Posters</em> in Minutes</h1>
+        <p>India's easy offer poster maker for supermarkets, shops, restaurants and businesses — in English and Malayalam.</p>
+        <div class="hero-cta">
+          <button class="btn btn-gold" onclick="showAuth();setAuthMode('signup')">Create Your Poster</button>
+          <button class="btn btn-ghost" onclick="scrollToSection('landingTemplatesSection')">Explore Templates</button>
+        </div>
+      </div>
+      <div class="hero-preview">
+        <div class="mock-poster">
+          <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=70" alt="Sample supermarket offer poster preview" style="width:100%;display:block;">
+        </div>
+      </div>
+    </div>
+
+    <div class="free-demo-card">
+      <div>
+        <h2>Create Your First Poster FREE</h2>
+        <p>Try Offer Poster Studio and create your first promotional poster for free.</p>
+      </div>
+      <button class="btn btn-gold" onclick="showAuth();setAuthMode('signup')">Get Started Free</button>
+    </div>
+
+    <div class="section" id="featuresSection">
+      <div class="section-head"><h2>Why Offer Poster Studio</h2></div>
+      <div class="features-grid" id="landingFeaturesGrid"></div>
+    </div>
+
+    <div class="section" id="landingTemplatesSection">
+      <div class="section-head"><h2>Popular Templates</h2></div>
+      <div class="cat-tiles" id="landingCatGrid" style="padding:0 18px;"></div>
+    </div>
+
+    <div class="section" id="landingFestivalSection">
+      <div class="section-head"><h2>Indian Festival Templates</h2></div>
+      <div class="cat-tiles" id="landingFestivalGrid" style="padding:0 18px;"></div>
+    </div>
+
+    <div class="section pricing-section" id="pricingSection">
+      <div class="section-head"><h2>Simple, Transparent Pricing</h2></div>
+      <div class="pricing-grid" id="landingPricingGrid"></div>
+    </div>
+
+    <div class="site-footer" id="landingFooter"></div>
+  </section>
+
+  <!-- Public pages: reachable from the desktop navbar / footer links, regardless of
+       login state, without leaving this single HTML file. -->
+  <section class="screen" id="screen-pub-templates">
+    <div class="pub-header"><button class="back-btn" onclick="closePublicScreen()">←</button><div class="brand"><div class="mark">OP</div>Offer Poster Studio</div></div>
+    <div class="section" style="padding-top:22px;">
+      <div class="section-head"><h2>Popular Templates</h2><p style="color:var(--muted);font-size:13px;margin-top:6px;">Pick a template, drop in your own photos and prices.</p></div>
+      <div class="cat-tiles" id="pubTemplatesGrid" style="padding:0 18px;"></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Indian Festival Templates</h2></div>
+      <div class="cat-tiles" id="pubFestivalGrid" style="padding:0 18px;"></div>
+    </div>
+    <div class="free-demo-card" style="margin-top:8px;">
+      <div><h2>Don't see what you need?</h2><p>Start from a blank canvas and build your own layout in the editor.</p></div>
+      <button class="btn btn-gold" onclick="handleNavCreate()">Create Blank Poster</button>
+    </div>
+    <div class="site-footer" id="pubTemplatesFooter"></div>
+  </section>
+
+  <section class="screen" id="screen-pub-features">
+    <div class="pub-header"><button class="back-btn" onclick="closePublicScreen()">←</button><div class="brand"><div class="mark">OP</div>Offer Poster Studio</div></div>
+    <div class="section" style="padding-top:22px;">
+      <div class="section-head"><h2>Everything you need to design offers fast</h2><p style="color:var(--muted);font-size:13px;margin-top:6px;">Built specifically for shops and supermarkets.</p></div>
+      <div class="features-grid" id="pubFeaturesGrid"></div>
+    </div>
+    <div class="site-footer" id="pubFeaturesFooter"></div>
+  </section>
+
+  <section class="screen" id="screen-pub-pricing">
+    <div class="pub-header"><button class="back-btn" onclick="closePublicScreen()">←</button><div class="brand"><div class="mark">OP</div>Offer Poster Studio</div></div>
+    <div class="section pricing-section" style="padding-top:22px;">
+      <div class="section-head"><h2>Simple, Transparent Pricing</h2><p style="color:var(--muted);font-size:13px;margin-top:6px;">Start free. Upgrade anytime for unlimited downloads.</p></div>
+      <div class="pricing-grid" id="pubPricingGrid"></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Frequently Asked</h2></div>
+      <div style="max-width:1280px;margin:0 auto;padding:0 18px;display:grid;gap:12px;">
+        <div class="pricing-card"><h3 style="font-family:var(--font-display);margin:0 0 8px;font-size:15px;">Can I cancel anytime?</h3><p style="color:var(--muted);font-size:13px;margin:0;">Yes — Premium and Business are simple monthly plans with no long-term lock-in.</p></div>
+        <div class="pricing-card"><h3 style="font-family:var(--font-display);margin:0 0 8px;font-size:15px;">How do I pay?</h3><p style="color:var(--muted);font-size:13px;margin:0;">Payments are made through Razorpay (card, UPI, netbanking or wallet). Your plan activates once the payment is verified.</p></div>
+      </div>
+    </div>
+    <div class="site-footer" id="pubPricingFooter"></div>
+  </section>
+
+  <section class="screen" id="screen-pub-contact">
+    <div class="pub-header"><button class="back-btn" onclick="closePublicScreen()">←</button><div class="brand"><div class="mark">OP</div>Offer Poster Studio</div></div>
+    <div class="section" style="padding-top:22px;">
+      <div class="section-head"><h2>Contact Us</h2><p style="color:var(--muted);font-size:13px;margin-top:6px;">We're happy to help with your account, plan or poster.</p></div>
+      <div style="max-width:1280px;margin:0 auto;padding:0 18px;display:grid;gap:14px;">
+        <div class="pricing-card">
+          <h3 style="font-family:var(--font-display);margin:0 0 8px;font-size:17px;">💬 WhatsApp Support</h3>
+          <p style="color:var(--muted);font-size:13.5px;margin:0 0 14px;">The fastest way to reach us — usually a reply within a few hours.</p>
+          <a href="https://wa.me/919526605590" target="_blank" class="btn btn-block" style="background:#25D366;color:#fff;">Message us on WhatsApp</a>
+        </div>
+        <div class="pricing-card">
+          <h3 style="font-family:var(--font-display);margin:0 0 8px;font-size:17px;">🧾 Account &amp; Billing</h3>
+          <p style="color:var(--muted);font-size:13.5px;margin:0 0 14px;">For plan upgrades or billing questions, sign in and use the Studio tab.</p>
+          <button class="btn btn-outline btn-block" onclick="handleNavHome()">Go to My Studio</button>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer" id="pubContactFooter"></div>
+  </section>
+
+  <section class="screen" id="screen-pub-privacy">
+    <div class="pub-header"><button class="back-btn" onclick="closePublicScreen()">←</button><div class="brand"><div class="mark">OP</div>Offer Poster Studio</div></div>
+    <div class="legal-body">
+      <h1 style="font-family:var(--font-display);font-size:24px;margin:20px 0 4px;">Privacy Policy</h1>
+      <p style="color:var(--muted);font-size:12.5px;margin:0 0 10px;">Last updated: 2026</p>
+      <p>Offer Poster Studio ("we", "us") provides a poster-design tool for shops and businesses. This page explains what information we collect and how it is used.</p>
+      <h2>Information we collect</h2>
+      <ul>
+        <li>Account details you provide: email address, password (securely handled by our authentication provider), and shop/business name.</li>
+        <li>Content you create: uploaded product photos, logos, poster text and saved poster drafts.</li>
+        <li>Payment details you submit for plan upgrades: UPI transaction ID and, if provided, a payment screenshot — used only to verify and activate your plan.</li>
+        <li>Basic usage data such as download counts, needed to enforce plan limits.</li>
+      </ul>
+      <h2>How we use your information</h2>
+      <ul>
+        <li>To provide the poster editor, save your drafts, and let you download your posters.</li>
+        <li>To activate and manage your subscription plan.</li>
+        <li>To respond to support requests you send us.</li>
+      </ul>
+      <h2>Data storage</h2>
+      <p>Your account data, uploaded images and poster drafts are stored securely with our backend provider (Supabase). We do not sell your personal data to third parties.</p>
+      <h2>Your choices</h2>
+      <p>You can edit your business profile at any time from the app. To request deletion of your account and associated data, contact us via the Contact page.</p>
+      <h2>Contact</h2>
+      <p>Questions about this policy can be sent to us via <a onclick="showPublicScreen('contact')" style="color:var(--teal);font-weight:700;cursor:pointer;">our contact page</a>.</p>
+    </div>
+    <div class="site-footer" id="pubPrivacyFooter"></div>
+  </section>
+
+  <section class="screen" id="screen-pub-terms">
+    <div class="pub-header"><button class="back-btn" onclick="closePublicScreen()">←</button><div class="brand"><div class="mark">OP</div>Offer Poster Studio</div></div>
+    <div class="legal-body">
+      <h1 style="font-family:var(--font-display);font-size:24px;margin:20px 0 4px;">Terms &amp; Conditions</h1>
+      <p style="color:var(--muted);font-size:12.5px;margin:0 0 10px;">Last updated: 2026</p>
+      <p>By creating an account or using Offer Poster Studio, you agree to the following terms.</p>
+      <h2>Using the service</h2>
+      <ul>
+        <li>You must provide accurate account information and are responsible for your account's security.</li>
+        <li>You agree not to upload content that is illegal, infringing, or that you do not have the right to use.</li>
+        <li>Free plan usage limits (such as daily downloads) apply as shown in the app and may change from time to time.</li>
+      </ul>
+      <h2>Your content</h2>
+      <p>You retain ownership of the photos, logos and text you upload. By uploading content, you confirm you have the right to use it in your posters.</p>
+      <h2>Plans and payment</h2>
+      <ul>
+        <li>Plans are available for 1 month (₹299) or 6 months (₹999), paid via Razorpay, and activate once payment is verified.</li>
+        <li>We do not automatically charge you — each renewal is a payment you make through Razorpay, verified before activation.</li>
+      </ul>
+      <h2>Service availability</h2>
+      <p>We aim to keep Offer Poster Studio available and reliable but do not guarantee uninterrupted access. Features may be added, changed or removed over time.</p>
+      <h2>Limitation of liability</h2>
+      <p>Offer Poster Studio is provided "as is". We are not liable for indirect or consequential losses arising from use of the service.</p>
+      <h2>Contact</h2>
+      <p>Questions about these terms can be sent via <a onclick="showPublicScreen('contact')" style="color:var(--teal);font-weight:700;cursor:pointer;">our contact page</a>.</p>
+    </div>
+    <div class="site-footer" id="pubTermsFooter"></div>
+  </section>
+
+  <div id="mainShell" style="display:none;">
+    <div class="topbar">
+      <div class="brand"><div class="mark">OP</div>Offer Poster Studio</div>
+      <div style="display:flex;gap:8px;"><div class="avatar-chip" id="avatarChip" onclick="goto('dashboard')">A</div></div>
+    </div>
+
+    <section class="screen" id="screen-home">
+      <div class="hero">
+        <span class="hero-eyebrow">⚡ Ready in under 60 seconds</span>
+        <h1>Create Professional Offer Posters <em>in Minutes.</em></h1>
+        <p>Pick a template, drop in your photos and prices, download in HD.</p>
+        <div class="hero-cta">
+          <button class="btn btn-gold" onclick="goto('marketplace')">Browse Templates</button>
+          <button class="btn btn-ghost" onclick="startBlankPoster()">+ Blank Poster</button>
+        </div>
+      </div>
+      <div class="section" style="padding-bottom: 0;">
+        <div style="background: linear-gradient(135deg, #3B2E6B, #211A42); border-radius: 16px; padding: 16px; color: #fff; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-2);">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #C9B6FF; letter-spacing: 0.05em;">New · Design Studio</div>
+            <div style="font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-top: 2px;">Build Any Design From Scratch</div>
+            <div style="font-size: 12.5px; opacity: 0.85; margin-top: 2px;">Free-form canvas with layers, shapes, text &amp; images — for logos, cards, social posts &amp; more.</div>
+          </div>
+          <button class="btn btn-sm" style="background:#fff;color:#211A42;flex-shrink:0;" onclick="goto('studio')">Open Studio</button>
+        </div>
+      </div>
+      <div class="section" style="padding-bottom:0;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <button class="btn btn-outline" style="flex-direction:column;padding:12px 4px;font-size:12px" onclick="openStudioTool('templates')">▣<br>Templates</button>
+          <button class="btn btn-outline" style="flex-direction:column;padding:12px 4px;font-size:12px" onclick="openStudioTool('logo')">🅰️<br>Logo Maker</button>
+          <button class="btn btn-outline" style="flex-direction:column;padding:12px 4px;font-size:12px" onclick="openStudioTool('card')">💼<br>Business Card</button>
+          <button class="btn btn-outline" style="flex-direction:column;padding:12px 4px;font-size:12px" onclick="openStudioTool('social')">📱<br>Social Designs</button>
+          <button class="btn btn-outline" style="flex-direction:column;padding:12px 4px;font-size:12px" onclick="openStudioTool('hub')">📘<br>Brochure · Menu</button>
+          <button class="btn btn-outline" style="flex-direction:column;padding:12px 4px;font-size:12px" onclick="openStudioTool('video')">🎬<br>Video Maker</button>
+          <button class="btn btn-outline" style="flex-direction:column;padding:12px 4px;font-size:12px;grid-column:span 3" onclick="openStudioTool('mydesigns')">🗂️ My Designs</button>
+        </div>
+      </div>
+      <div class="section" style="padding-bottom: 0;">
+        <div style="background: linear-gradient(135deg, var(--teal), var(--teal-2)); border-radius: 16px; padding: 16px; color: #fff; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-2);">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gold-soft); letter-spacing: 0.05em;">Supermarket Special</div>
+            <div style="font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-top: 2px;">Shelf Price Tags (പ്രൈസ് ടാഗ്)</div>
+            <div style="font-size: 12.5px; opacity: 0.85; margin-top: 2px;">ഷെൽഫിൽ ഒട്ടിക്കാൻ ചെറിയ പ്രൈസ് കാർഡുകൾ ഉണ്ടാക്കൂ</div>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="startShelfTagPoster()">Create Tag</button>
+        </div>
+      </div>
+      <div class="section" style="padding-bottom:0;">
+        <div class="section-head"><h2>🔥 Bold Sale Banners</h2></div>
+        <p style="font-size:12.5px;color:var(--muted);margin:-6px 0 12px;">Ready-made bold offer banners — theme, headline and badges already set, just add your photo and details.</p>
+      </div>
+      <div class="hscroll" id="boldSaleRow"></div>
+      <div class="section" style="padding-bottom:0;">
+        <div class="section-head"><h2>🖼️ Single Product Templates</h2></div>
+        <p style="font-size:12.5px;color:var(--muted);margin:-6px 0 12px;">One big product photo, bold theme and price already set — tap the photo to swap it, tap any text to edit it.</p>
+      </div>
+      <div class="hscroll" id="singleProductRow"></div>
+      <div class="section">
+        <div class="section-head">
+          <h2>📦 Free Product Photos</h2>
+          <span class="see-all" onclick="goto('library')">View all</span>
+        </div>
+      </div>
+      <div class="hscroll" id="homeLibraryRow"></div>
+      <div class="section" style="padding-top:16px;">
+        <div style="position:relative;">
+          <input type="text" id="homeSearchInput" placeholder="Search templates..." onkeydown="if(event.key==='Enter') runHomeSearch();"
+            style="width:100%;padding:13px 44px 13px 15px;border-radius:14px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;outline:none;">
+          <button onclick="runHomeSearch()" style="position:absolute;right:6px;top:6px;bottom:6px;width:34px;border:none;background:var(--ink);color:#fff;border-radius:10px;">🔍</button>
+        </div>
+      </div>
+      <div class="section"><div class="section-head"><h2>🔥 Trending Now</h2><span class="see-all" onclick="goto('marketplace')">See all</span></div></div>
+      <div class="hscroll" id="trendingRow"></div>
+      <div class="section"><div class="section-head"><h2>Shop by Category</h2></div></div>
+      <div class="cat-tiles" id="catTiles"></div>
+      <div class="section"><div class="section-head"><h2>👑 Premium Templates</h2><span class="see-all" onclick="goto('payment')">Go Premium</span></div></div>
+      <div class="hscroll" id="premiumRow"></div>
+      <div class="section"><div class="section-head"><h2>✨ Featured</h2></div></div>
+      <div class="hscroll" id="featuredRow"></div>
+      <p class="footer-note">© Offer Poster Studio · Live-synced with Admin Panel</p>
+
+      <div class="desktop-extra-sections">
+        <div class="section" id="homeFeaturesSection">
+          <div class="section-head"><h2>Why Offer Poster Studio</h2></div>
+          <div class="features-grid" id="homeFeaturesGrid"></div>
+        </div>
+        <div class="section pricing-section" id="homePricingSection">
+          <div class="section-head"><h2>Simple, Transparent Pricing</h2></div>
+          <div class="pricing-grid" id="homePricingGrid"></div>
+        </div>
+        <div class="site-footer" id="homeFooter"></div>
+      </div>
+    </section>
+
+    <!-- Product Download Library Screen -->
+    <section class="screen" id="screen-library">
+      <div class="topbar" style="position:static;">
+        <div style="font-family:var(--font-display);font-weight:700;font-size:18px;">Product Photo Library</div>
+        <button class="icon-btn" onclick="goto('home')">✕</button>
+      </div>
+      <div class="section" style="padding-top:14px;">
+        <input type="text" id="libSearchInput" placeholder="Search products..." oninput="renderLibraryGallery()" style="width:100%;padding:13px 15px;border-radius:14px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;outline:none;">
+      </div>
+      <div class="pill-row" id="libCategoryPills" style="margin-bottom:12px;"></div>
+      <div id="libGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 18px 40px;"></div>
+    </section>
+
+    <section class="screen" id="screen-marketplace">
+      <div class="topbar" style="position:static;"><div style="font-family:var(--font-display);font-weight:700;font-size:18px;">Templates</div></div>
+      <div class="section" style="padding-top:14px;">
+        <input type="text" id="searchInput" placeholder="Search templates..." oninput="renderMarketplace()" style="width:100%;padding:13px 15px;border-radius:14px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;outline:none;">
+      </div>
+      <div class="pill-row" id="categoryPills"></div>
+      <div class="pill-row" id="tagPills" style="margin-top:4px;padding-bottom:12px;"></div>
+      <div class="tgrid" id="marketplaceGrid"></div>
+    </section>
+
+    <section class="screen" id="screen-dashboard">
+      <div class="topbar" style="position:static;"><div style="font-family:var(--font-display);font-weight:700;font-size:18px;">My Studio</div><button class="icon-btn" onclick="logout()">⎋</button></div>
+      <div class="section" style="padding-top:14px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div class="avatar-chip" style="width:50px;height:50px;font-size:17px;" id="dashAvatar">A</div>
+          <div><div style="font-weight:800;font-size:15px;" id="dashName">—</div><div style="font-size:12px;color:var(--muted);" id="dashEmail">—</div></div>
+        </div>
+        <button class="btn btn-outline btn-block btn-sm" onclick="goto('profile')">✏️ Edit Business Profile</button>
+      </div>
+      <div class="plan-card">
+        <div class="row"><span>CURRENT PLAN</span><span id="planDaysLeft"></span></div>
+        <div class="planname" id="planName">Free Plan</div>
+        <div class="row" style="margin-top:8px;"><span id="planExpiryRow"></span>
+          <button class="btn btn-gold btn-sm" onclick="goto('payment')" id="planUpgradeBtn">Upgrade</button></div>
+      </div>
+      <div style="margin: 0 18px 16px;">
+        <a href="https://wa.me/919526605590?text=ഹലോ,%20എനിക്ക്%20Offer%20Poster%20Studio-യുമായി%20ബന്ധപ്പെട്ട്%20ഒരു%20സംശയമുണ്ട്." target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#25D366;color:#fff;border-radius:14px;font-weight:700;font-size:14px;text-decoration:none;">
+          💬 WhatsApp വഴി സഹായം തേടാം
+        </a>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="num" id="statPosters">0</div><div class="lbl">Posters</div></div>
+        <div class="stat-card"><div class="num" id="statDownloads">0</div><div class="lbl">Downloads</div></div>
+        <div class="stat-card"><div class="num" id="statFavs">0</div><div class="lbl">Favorites</div></div>
+      </div>
+      <div class="section"><div class="pill-row" style="padding:0;margin:0 0 12px;">
+        <div class="pill active" data-tab="all" onclick="setDashTab('all')">My Posters</div>
+        <div class="pill" data-tab="favorites" onclick="setDashTab('favorites')">Favorites</div>
+      </div></div>
+      <div class="poster-grid" id="dashGrid"></div>
+      <div id="dashEmpty"></div>
+      <p class="footer-note">Only your latest 3 posters are kept automatically.</p>
+    </section>
+
+    <section class="screen" id="screen-profile">
+      <div class="topbar" style="position:static;"><div style="font-family:var(--font-display);font-weight:700;font-size:18px;">Business Profile</div><button class="icon-btn" onclick="goto('dashboard')">✕</button></div>
+      <div class="section" style="padding-top:16px;">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+          <div class="logo-upload" id="profileLogoPreview" onclick="document.getElementById('profileLogoInput').click()">➕</div>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('profileLogoInput').click()">📤 Upload Logo</button>
+        </div>
+        <input type="file" id="profileLogoInput" accept="image/*" style="display:none;" onchange="handleProfileLogoSelect(event)">
+        <div class="field"><label>Shop / Business Name</label><input type="text" id="profShop"></div>
+        <div class="field"><label>Business Category</label><select id="profCategory"></select></div>
+        <div class="field"><label>WhatsApp Number</label><input type="text" id="profWhatsapp"></div>
+        <div class="field"><label>Address</label><input type="text" id="profAddress"></div>
+        <button class="btn btn-primary btn-block" onclick="saveProfile()">Save Profile</button>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-payment">
+      <div class="topbar" style="position:static;"><div style="font-family:var(--font-display);font-weight:700;font-size:18px;">Upgrade Plan</div><button class="icon-btn" onclick="goto('dashboard')">✕</button></div>
+      <div class="section" style="padding-top:16px;" id="paymentBody"></div>
+    </section>
+
+    <section class="screen" id="screen-editor">
+      <div class="editor-shell">
+        <div class="editor-top">
+          <button class="icon-btn" onclick="exitEditor()" style="background:rgba(251,246,234,0.08);border-color:rgba(251,246,234,0.2);color:var(--cream);">←</button>
+          <div style="display:flex;gap:6px;">
+            <button class="icon-btn" id="undoBtn" onclick="undoEdit()" style="width:34px;height:34px;background:rgba(251,246,234,0.08);color:var(--cream);" disabled>↶</button>
+            <button class="icon-btn" id="redoBtn" onclick="redoEdit()" style="width:34px;height:34px;background:rgba(251,246,234,0.08);color:var(--cream);" disabled>↷</button>
+          </div>
+          <div class="title" id="editorTitle">Untitled Poster</div>
+          <button class="btn btn-gold btn-sm" onclick="openExportSheet()">Download</button>
+        </div>
+        <div id="limitBanner" class="limit-banner" style="display:none;">
+          <span>Free plan: <strong id="downloadsLeft">1</strong> download left today</span>
+          <button onclick="goto('dashboard');goto('payment')">Upgrade</button>
+        </div>
+        <div class="canvas-stage"><div class="canvas-frame" id="canvasFrame"><canvas id="posterCanvas" width="1080" height="1350"></canvas></div></div>
+        <div class="zoom-row">
+          <button class="icon-btn" style="width:28px;height:28px;background:rgba(251,246,234,0.08);color:var(--cream);" onclick="setZoom(-0.15)">−</button>
+          <span id="zoomLabel">100%</span>
+          <button class="icon-btn" style="width:28px;height:28px;background:rgba(251,246,234,0.08);color:var(--cream);" onclick="setZoom(0.15)">+</button>
+        </div>
+        <div class="canvas-hint">Tap any text to select, drag, resize, rotate or bend it. Tap it again to edit. Tap a photo to replace it.</div>
+        <div class="editor-tabs">
+          <div class="etab active" data-tab="photos" onclick="setEditorTab('photos')">📷 Photos</div>
+          <div class="etab" data-tab="text" onclick="setEditorTab('text')">🔤 Text</div>
+          <div class="etab" data-tab="logo" onclick="setEditorTab('logo')">🏷 Logo</div>
+          <div class="etab" data-tab="stickers" onclick="setEditorTab('stickers')">✨ Stickers</div>
+          <div class="etab" data-tab="elements" onclick="setEditorTab('elements')">🔷 Elements</div>
+          <div class="etab" data-tab="style" onclick="setEditorTab('style')">🎨 Style</div>
+          <div class="etab" data-tab="layout" onclick="setEditorTab('layout')">▦ Layout</div>
+          <div class="etab" data-tab="headertpl" onclick="setEditorTab('headertpl')">🌟 Top Banners</div>
+        </div>
+        <div class="editor-panel">
+          <div class="panel-block active" id="panel-photos">
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">PRODUCT PHOTOS · TAP TO REPLACE · DRAG ON CANVAS TO REPOSITION</label>
+            <div class="slot-grid" id="slotGrid"></div>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+          </div>
+          <div class="panel-block" id="panel-text">
+            <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">💡 Tap directly on the poster to select shop name, headline, dates, or address — then drag, resize, rotate, bend, edit or delete it.</p>
+            <div class="field"><label>Shop Name</label><input type="text" id="fShopName" oninput="onFieldInput('shopName',this.value)"></div>
+            <div class="field"><label>Offer Headline</label><input type="text" id="fHeadline" oninput="onFieldInput('headline',this.value)"></div>
+            <div class="field"><label>Valid Dates</label><input type="text" id="fDateRange" placeholder="25th Feb – 2nd Mar 2026" oninput="onFieldInput('dateRange',this.value)"></div>
+            <div style="display:flex;gap:10px;">
+              <div class="field" style="flex:1;"><label>Price</label><input type="text" id="fPrice" oninput="onFieldInput('price',this.value)"></div>
+              <div class="field" style="flex:1;"><label>Discount</label><input type="text" id="fDiscount" oninput="onFieldInput('discount',this.value)"></div>
+            </div>
+            <div class="field"><label>WhatsApp Number</label><input type="text" id="fWhatsapp" oninput="onFieldInput('whatsapp',this.value)"></div>
+            <div class="field"><label>Address</label><input type="text" id="fAddress" oninput="onFieldInput('address',this.value)"></div>
+
+            <div class="divider"></div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">SELECTED TEXT ON POSTER</label>
+            <div class="sticker-controls" id="textLayerControls"><p style="font-size:12px;color:var(--muted);">Tap any text on the poster (shop name, headline, price pill, address, etc.) to select it — then move, resize, rotate, edit or delete it.</p></div>
+
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:16px 0 8px;">ALL TEXT LAYERS</label>
+            <div class="font-row" id="textLayerChips"></div>
+
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:16px 0 8px;">QUICK ENGLISH PHRASES</label>
+            <div id="enQuick" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;"></div>
+
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:16px 0 8px;">QUICK MALAYALAM PHRASES</label>
+            <div id="mlQuick" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+          </div>
+          <div class="panel-block" id="panel-logo">
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">SHOP LOGO · WIDTH & HEIGHT</label>
+            <div class="logo-upload" id="logoUpload" onclick="document.getElementById('logoInput').click()">➕</div>
+            <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoSelect(event)">
+            
+            <div style="font-size:10px;font-weight:700;color:var(--muted);margin:6px 0 2px;">വീതി (Width) കൂട്ടാൻ/കുറയ്ക്കാൻ</div>
+            <div style="display:flex;gap:6px;margin-bottom:6px;">
+              <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeLogoDim('w', 1.25)">↔️ വീതി കൂട്ടുക</button>
+              <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeLogoDim('w', 0.8)">↔️ വീതി കുറയ്ക്കുക</button>
+            </div>
+            <button class="btn btn-outline btn-sm btn-block" style="margin-bottom:8px;" onclick="resizeLogoDim('w', 1.6)">↔️++ വീതി ഒരുപാട് കൂട്ടുക (Wide)</button>
+
+            <div style="font-size:10px;font-weight:700;color:var(--muted);margin:6px 0 2px;">നീളം (Height)</div>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeLogoDim('h', 1.25)">↕️ നീളം കൂട്ടുക</button>
+              <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeLogoDim('h', 0.8)">↕️ നീളം കുറയ്ക്കുക</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;">
+              <div></div>
+              <button class="btn btn-outline btn-sm" onclick="moveLogo(0, -0.02)">⬆️ മുകളിൽ</button>
+              <div></div>
+              <button class="btn btn-outline btn-sm" onclick="moveLogo(-0.02, 0)">⬅️ ഇടത്</button>
+              <button class="btn btn-outline btn-sm" onclick="moveLogo(0, 0.02)">⬇️ താഴെ</button>
+              <button class="btn btn-outline btn-sm" onclick="moveLogo(0.02, 0)">➡️ വലത്</button>
+            </div>
+
+            <button class="btn btn-outline btn-sm btn-block" onclick="removeLogo()">🗑 ലോഗോ ഒഴിവാക്കുക</button>
+          </div>
+          
+          <div class="panel-block" id="panel-headertpl">
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">TAP TO APPLY TOP HEADER TEMPLATE</label>
+            <div class="sticker-grid" id="headerTplLibraryGrid" style="grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+            <button class="btn btn-outline btn-sm btn-block" style="margin-top:14px;" onclick="removeHeaderBanner()">🗑 Remove Header Banner</button>
+          </div>
+
+          <div class="panel-block" id="panel-stickers">
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">🔥 BOLD SALE BADGES · TAP TO ADD</label>
+            <div class="sticker-grid" id="badgeLibraryGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+            <div class="divider"></div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">TAP TO ADD · DRAG TO POSITION</label>
+            <div class="sticker-grid" id="stickerLibraryGrid"></div>
+            <div class="divider"></div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">SELECTED STICKER</label>
+            <div class="sticker-controls" id="stickerControls"><p style="font-size:12px;color:var(--muted);">Tap a sticker on the poster to select it.</p></div>
+          </div>
+          <div class="panel-block" id="panel-elements">
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">🔷 SHAPES · PICK A COLOR, TAP TO ADD</label>
+            <div class="swatch-row" id="shapeColorSwatches" style="margin-bottom:10px;"></div>
+            <div class="sticker-grid" id="shapeLibraryGrid" style="grid-template-columns:repeat(6,1fr);"></div>
+            <div class="divider"></div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">SELECTED SHAPE</label>
+            <div class="sticker-controls" id="elementControls"><p style="font-size:12px;color:var(--muted);">Tap a shape on the poster to select it.</p></div>
+          </div>
+          <div class="panel-block" id="panel-style">
+            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--cream-2);border-radius:12px;padding:12px 14px;margin-bottom:16px;">
+              <div>
+                <div style="font-weight:700;font-size:13px;">🖼️ Full Screen (No Border)</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px;">One flat color, no header/footer bands or side border.</div>
+              </div>
+              <button class="btn btn-sm" id="borderlessToggleBtn" onclick="toggleBorderless()" style="flex-shrink:0;"></button>
+            </div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">COLOR THEME</label>
+            <div class="swatch-row" id="colorSwatches"></div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:16px 0 8px;">TEXT COLOR (Shop Name / Headline / Address)</label>
+            <div class="swatch-row" id="textColorSwatches"></div>
+
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:16px 0 8px;">DISCOUNT / DATE PILL TEXT COLOR</label>
+            <div class="swatch-row" id="pillColorSwatches"></div>
+
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:16px 0 8px;">PRODUCT NAME TEXT COLOR</label>
+            <div class="swatch-row" id="productColorSwatches"></div>
+
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:16px 0 8px;">FONT</label>
+            <div class="font-row" id="fontChips"></div>
+          </div>
+           
+          <div class="panel-block" id="panel-layout">
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">PHOTO LAYOUT</label>
+            <div class="font-row" id="layoutChips"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Design Studio (new, standalone layer-based canvas) =====
+         Separate screen and files (studio*.js / studio.css). Independent of the original poster editor. -->
+    <section class="screen" id="screen-studio">
+      <div class="studio-topbar">
+        <button class="icon-btn" onclick="exitStudio()" title="Back">←</button>
+        <input type="text" id="studioDesignName" class="studio-name-input" value="Untitled Design" oninput="studioRenameDesign(this.value)">
+        <div class="studio-topbar-actions">
+          <button class="icon-btn" id="studioUndoBtn" onclick="Studio.undo()" title="Undo (Ctrl+Z)">↺</button>
+          <button class="icon-btn" id="studioRedoBtn" onclick="Studio.redo()" title="Redo (Ctrl+Y)">↻</button>
+          <button class="btn btn-outline btn-sm" onclick="window.StudioStore&&StudioStore.saveNow(true)" title="Save (Ctrl+S)">💾</button>
+          <button class="btn btn-primary btn-sm" onclick="Studio.exportDialogOpen()">⬇ Export</button>
+        </div>
+      </div>
+
+      <div class="studio-toolbar">
+        <button class="studio-tool studio-tool-wide" onclick="Studio.toggleDrawer()" title="Templates, elements, text, backgrounds">☰ Library</button>
+        <button class="studio-tool studio-tool-wide" onclick="window.StudioTools&&StudioTools.openHub()" title="Logo, business card, brochure, social…">✦ Makers</button>
+        <span class="studio-tool-sep"></span>
+        <button class="studio-tool" onclick="Studio.addRect()" title="Rectangle">▭</button>
+        <button class="studio-tool" onclick="Studio.addEllipse()" title="Ellipse">⬭</button>
+        <button class="studio-tool" onclick="Studio.addLine()" title="Line">╱</button>
+        <button class="studio-tool" onclick="Studio.addText()" title="Add text">T</button>
+        <button class="studio-tool" onclick="document.getElementById('studioImgInput').click()" title="Upload image">🖼️</button>
+        <input type="file" id="studioImgInput" accept="image/png,image/jpeg,image/webp" style="display:none;" onchange="Studio.handleImageUpload(event)">
+        <span class="studio-tool-sep"></span>
+        <button class="studio-tool" onclick="Studio.toggleGrid()" id="studioGridBtn" title="Grid & snapping">#</button>
+        <button class="studio-tool" onclick="Studio.zoomOut()" title="Zoom out">−</button>
+        <button class="studio-tool studio-zoom-label" id="studioZoomLabel" onclick="Studio.fitZoom()" title="Fit to screen">100%</button>
+        <button class="studio-tool" onclick="Studio.zoomIn()" title="Zoom in">+</button>
+      </div>
+
+      <div class="studio-body">
+        <div class="studio-drawer" id="studioDrawer">
+          <div class="studio-drawer-head">
+            <div class="studio-dtabs" id="studioDrawerTabs"></div>
+            <button class="icon-btn" onclick="Studio.closeDrawer()" title="Close">✕</button>
+          </div>
+          <div class="studio-drawer-body" id="studioDrawerBody"></div>
+        </div>
+
+        <div class="studio-main">
+          <div class="studio-canvas-wrap" id="studioCanvasWrap">
+            <div class="studio-ruler studio-ruler-h" id="studioRulerH"></div>
+            <div class="studio-ruler studio-ruler-v" id="studioRulerV"></div>
+            <div class="studio-canvas-scroll" id="studioCanvasScroll">
+              <div class="studio-canvas-stack" id="studioCanvasStack">
+                <canvas id="studioCanvas"></canvas>
+                <canvas id="studioGridOverlay"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="studio-pagebar" id="studioPagebar"></div>
+        </div>
+
+        <div class="studio-panel" id="studioPanel">
+          <div class="studio-panel-tabs">
+            <div class="studio-panel-tab active" data-ptab="design" onclick="studioSetPanelTab('design')">Design</div>
+            <div class="studio-panel-tab" data-ptab="layers" onclick="studioSetPanelTab('layers')">Layers</div>
+            <div class="studio-panel-tab" data-ptab="props" onclick="studioSetPanelTab('props')">Edit</div>
+          </div>
+
+          <div class="studio-panel-block active" id="studioPanelDesign">
+            <label class="studio-label">CANVAS SIZE</label>
+            <div class="studio-size-row">
+              <input type="number" id="studioCanvasW" min="50" max="6000" value="1080" onchange="Studio.setCanvasSize()">
+              <span>×</span>
+              <input type="number" id="studioCanvasH" min="50" max="6000" value="1080" onchange="Studio.setCanvasSize()">
+              <span>px</span>
+            </div>
+            <label class="studio-label">RESIZE TO PRESET</label>
+            <select id="studioPresetSel" class="studio-select" onchange="window.StudioTools&&StudioTools.applyPreset(this.value);this.selectedIndex=0;"></select>
+            <label class="studio-label">ALIGN TO PAGE</label>
+            <div class="studio-align-row">
+              <button class="btn btn-outline btn-sm" onclick="Studio.align('left')">⬅︎</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.align('centerH')">↔︎</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.align('right')">➡︎</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.align('top')">⬆︎</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.align('centerV')">↕︎</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.align('bottom')">⬇︎</button>
+            </div>
+            <label class="studio-label">SELECTION</label>
+            <div class="studio-size-row" style="flex-wrap:wrap;gap:8px;">
+              <button class="btn btn-outline btn-sm" onclick="Studio.groupSelection()">⛓️ Group</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.ungroupSelection()">🔗 Ungroup</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.duplicateSelection()">📄 Duplicate</button>
+              <button class="btn btn-outline btn-sm" onclick="Studio.toggleLockSelection()">🔒 Lock</button>
+              <button class="btn btn-outline btn-sm" style="border-color:var(--coral);color:var(--coral);" onclick="Studio.deleteSelection()">🗑 Delete</button>
+            </div>
+            <p class="studio-hint">Shortcuts: Ctrl+Z/Y undo·redo, Ctrl+D duplicate, Ctrl+G group, arrows nudge, Del delete, Ctrl+S save.</p>
+          </div>
+
+          <div class="studio-panel-block" id="studioPanelLayers">
+            <label class="studio-label">LAYERS (top = front)</label>
+            <div id="studioLayersList" class="studio-layers-list"></div>
+          </div>
+
+          <div class="studio-panel-block" id="studioPanelProps">
+            <div id="studioPropsBody"><p class="studio-empty-hint">Tap an object on the canvas to edit it.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export dialog -->
+      <div class="studio-modal" id="studioExportModal">
+        <div class="studio-modal-card">
+          <h3>Export design</h3>
+          <div class="studio-prop-row"><label>Format</label>
+            <select id="studioExpFormat" class="studio-select" onchange="Studio.updateExportUI()">
+              <option value="png">PNG</option><option value="jpg">JPG</option><option value="pdf">PDF</option><option value="pdfprint">Print-ready PDF (300 DPI)</option>
+            </select></div>
+          <div class="studio-prop-row" id="studioExpScaleRow"><label>Quality</label>
+            <select id="studioExpScale" class="studio-select" onchange="Studio.updateExportUI()">
+              <option value="1">Standard (1×)</option><option value="2">High (2×)</option><option value="3">Ultra (3×)</option><option value="custom">Custom width…</option>
+            </select></div>
+          <div class="studio-prop-row" id="studioExpCustomRow" style="display:none"><label>Width px</label><input type="number" id="studioExpCustomW" value="1920" min="100" max="8000" oninput="Studio.updateExportUI()"></div>
+          <div class="studio-prop-row" id="studioExpQualityRow" style="display:none"><label>JPG quality</label><input type="range" id="studioExpQuality" min="0.5" max="1" step="0.05" value="0.92"></div>
+          <div class="studio-prop-row" id="studioExpTransparentRow"><label>Transparent</label><input type="checkbox" id="studioExpTransparent"></div>
+          <div class="studio-prop-row" id="studioExpPages" style="display:none"><label>All pages</label><input type="checkbox" id="studioExpAllPages" checked></div>
+          <p class="studio-hint" id="studioExpPhys"></p>
+          <p class="studio-hint" id="studioExpInfo"></p>
+          <div class="studio-actions">
+            <button class="btn btn-outline" onclick="Studio.exportDialogClose()">Cancel</button>
+            <button class="btn btn-primary" onclick="Studio.doExport()">Download</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Template preview -->
+      <div class="studio-modal" id="studioPreviewModal">
+        <div class="studio-modal-card">
+          <h3 class="name">Template</h3>
+          <img alt="preview" style="width:100%;max-height:60vh;object-fit:contain;border-radius:10px;background:#eee">
+          <div class="studio-actions">
+            <button class="btn btn-outline" onclick="StudioTpl.closePreview()">Close</button>
+            <button class="btn btn-primary" onclick="StudioTpl.usePreview()">Use this template</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generic dialog used by the Makers (logo, card, brochure…) and Admin/My designs -->
+      <div class="studio-modal" id="studioDialog"><div class="studio-modal-card wide" id="studioDialogCard"></div></div>
+    </section>
+  </div>
+
+  <div class="bottomnav" id="bottomNav" style="display:none;">
+    <div class="nav-item active" data-nav="home" onclick="goto('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</div>
+    <div class="nav-item" data-nav="marketplace" onclick="goto('marketplace')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Templates</div>
+    <div class="fab" onclick="startBlankPoster()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg></div>
+    <div class="nav-item" data-nav="dashboard" onclick="goto('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Studio</div>
+    <div class="nav-item" data-nav="profile" onclick="goto('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Profile</div>
+  </div>
+</div>
+
+<button id="viewModeToggle" onclick="toggleDesktopView()">🖥️ Desktop View</button>
+<div id="toast"></div>
+<div class="overlay" id="overlay" onclick="closeSheets()"></div>
+
+<div class="sheet" id="sheetForgot">
+  <div class="sheet-handle"></div><div class="sheet-title">Reset your password</div>
+  <p style="font-size:13px;color:var(--muted);margin-top:-6px;">We'll email you a reset link.</p>
+  <div class="field"><label>Email</label><input type="email" id="forgotEmail"></div>
+  <div id="forgotMsg" style="font-size:12.5px;color:var(--teal);margin-bottom:10px;display:none;"></div>
+  <button class="btn btn-primary btn-block" onclick="submitForgot()">Send reset link</button>
+</div>
+
+<div class="sheet" id="sheetSlotEdit">
+  <div class="sheet-handle"></div><div class="sheet-title">Edit this photo</div>
+  <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+    <div class="slot-thumb" id="slotEditPreview" style="width:70px;height:70px;flex-shrink:0;" onclick="selectSlot(pendingSlotIndex)"></div>
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="selectSlot(pendingSlotIndex)">📤 Upload from Device</button>
+  </div>
+  <div id="bgRemoveControls" style="display:flex;gap:8px;margin-bottom:14px;"></div>
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">OR CHOOSE FROM PRODUCT LIBRARY</label>
+  <div class="sticker-grid" id="slotLibraryGrid" style="margin-bottom:16px;"></div>
+  <button class="btn btn-outline btn-sm btn-block" id="addPriceBoxBtn" style="margin-bottom:12px;" onclick="togglePriceBoxField()">➕ Add Price Box</button>
+  <div id="priceBoxFieldWrap" style="display:none;">
+    <div style="display:flex;gap:10px;">
+      <div class="field" style="flex:1;"><label>MRP</label><input type="text" id="slotMrp" placeholder="₹599" oninput="onSlotPriceFieldInput()"></div>
+      <div class="field" style="flex:1;"><label>Offer Price</label><input type="text" id="slotOfferPrice" placeholder="₹399" oninput="onSlotPriceFieldInput()"></div>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:8px 0 6px;">MRP BOX COLOR</label>
+    <div class="swatch-row" id="mrpBoxColorSwatches" style="margin-bottom:10px;"></div>
+    <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:8px 0 6px;">OFFER PRICE BOX COLOR</label>
+    <div class="swatch-row" id="offerBoxColorSwatches" style="margin-bottom:14px;"></div>
+  </div>
+  <button class="btn btn-outline btn-sm btn-block" id="addProductNameBtn" style="margin-bottom:12px;" onclick="toggleProductNameField()">➕ Add Product Name</button>
+  <div class="field" id="productNameFieldWrap" style="display:none;">
+    <label>Product Name</label>
+    <input type="text" id="slotOfferText" placeholder="e.g. Sunflower Oil" oninput="onSlotOfferTextInput(this.value)">
+    <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:10px 0 6px;">PRODUCT NAME BOX COLOR</label>
+    <div class="swatch-row" id="productNameBoxColorSwatches" style="margin-bottom:6px;"></div>
+  </div>
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:12px 0 6px;">PHOTO SIZE (ZOOM INSIDE BOX)</label>
+  <div style="display:flex;gap:8px;margin-bottom:14px;">
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="adjustSlotZoom(0.15)">🔍+ വലുതാക്കുക</button>
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="adjustSlotZoom(-0.15)">🔍− ചെറുതാക്കുക</button>
+  </div>
+
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:12px 0 6px;">PHOTO BOX SIZE (വീതി / നീളം — രണ്ട് സൈഡിലേക്കും)</label>
+  <div style="display:flex;gap:6px;margin-bottom:6px;">
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeSlotBox('w', 1.1)">↔️+ വീതി കൂട്ടുക</button>
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeSlotBox('w', 0.9)">↔️− വീതി കുറയ്ക്കുക</button>
+  </div>
+  <div style="display:flex;gap:6px;margin-bottom:14px;">
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeSlotBox('h', 1.1)">↕️+ നീളം കൂട്ടുക</button>
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizeSlotBox('h', 0.9)">↕️− നീളം കുറയ്ക്കുക</button>
+  </div>
+
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:12px 0 6px;">MOVE MRP / PRICE TAG</label>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;">
+    <div></div>
+    <button class="btn btn-outline btn-sm" onclick="movePriceTag(0, -0.02)">⬆️</button>
+    <div></div>
+    <button class="btn btn-outline btn-sm" onclick="movePriceTag(-0.02, 0)">⬅️</button>
+    <button class="btn btn-outline btn-sm" onclick="movePriceTag(0, 0.02)">⬇️</button>
+    <button class="btn btn-outline btn-sm" onclick="movePriceTag(0.02, 0)">➡️</button>
+  </div>
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:8px 0 6px;">RESIZE MRP / PRICE TAG</label>
+  <div style="display:flex;gap:6px;margin-bottom:14px;">
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizePriceTag(1.15)">🔍+ വലുതാക്കുക</button>
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="resizePriceTag(0.87)">🔍− ചെറുതാക്കുക</button>
+  </div>
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:8px 0 6px;">PRICE TAG SHAPE</label>
+  <div class="font-row" id="priceStyleChips" style="margin-bottom:14px;"></div>
+
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin:12px 0 6px;">MOVE % OFF BADGE</label>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;">
+    <div></div>
+    <button class="btn btn-outline btn-sm" onclick="movePctBadge(0, -0.03)">⬆️</button>
+    <div></div>
+    <button class="btn btn-outline btn-sm" onclick="movePctBadge(-0.03, 0)">⬅️</button>
+    <button class="btn btn-outline btn-sm" onclick="movePctBadge(0, 0.03)">⬇️</button>
+    <button class="btn btn-outline btn-sm" onclick="movePctBadge(0.03, 0)">➡️</button>
+  </div>
+
+  <button class="btn btn-primary btn-block" onclick="saveSlotPrices()">Save Photo Details</button>
+  <div style="display:flex;gap:8px;margin-top:10px;">
+    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="deleteSlotContent()">🗑 Remove Photo</button>
+    <button class="btn btn-outline btn-sm" style="flex:1;border-color:var(--coral);color:var(--coral);" onclick="deleteSlotBox()">🗑 Delete This Box</button>
+  </div>
+</div>
+
+<div class="sheet" id="sheetInlineEdit">
+  <div class="sheet-handle"></div><div class="sheet-title" id="inlineEditTitle">Edit text</div>
+  <div id="inlineEditFields"></div>
+  <button class="btn btn-primary btn-block" onclick="closeSheets()">Done</button>
+</div>
+
+<div class="sheet" id="sheetExport">
+  <div class="sheet-handle"></div><div class="sheet-title">Download poster</div>
+  <div id="inAppBrowserWarning" style="display:none;background:rgba(225,85,59,0.1);border:1px solid rgba(225,85,59,0.3);border-radius:12px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--coral-2);"></div>
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">SIZE</label>
+  <div class="pill-row" id="sizeChips" style="padding:0;margin:0 0 14px;"></div>
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">FORMAT</label>
+  <div class="pill-row" id="formatChips" style="padding:0;margin:0 0 14px;"></div>
+  <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;">QUALITY</label>
+  <div class="pill-row" id="qualityChips" style="padding:0;margin:0 0 18px;"></div>
+  <button class="btn btn-primary btn-block" onclick="doExport()">⬇ Download Now</button>
+  <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="saveDraft()">Save as Draft</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- Google Identity Services — only needed if you switch to the native Google "One Tap" /
+     ID-token sign-in flow. The button below uses Supabase's own OAuth redirect flow instead,
+     which needs NO client ID here at all — see the comment above GOOGLE_CLIENT_ID. -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js" onerror="document.write('<script src=&quot;https://unpkg.com/fabric@5.3.0/dist/fabric.min.js&quot;><\/script>')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
