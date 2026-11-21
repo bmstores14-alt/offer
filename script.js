@@ -3103,11 +3103,12 @@ create table if not exists studio_designs (
   updated_at timestamptz default now()
 );
 alter table studio_designs enable row level security;
+drop policy if exists "own studio designs" on studio_designs;
 create policy "own studio designs" on studio_designs for all
   using (auth.uid() = user_id) with check (auth.uid() = user_id);
 `;
 
-const Studio = (() => {
+var Studio = (() => {
   // Custom properties that must survive JSON save/load/undo.
   const INCLUDE = ['selectable', 'evented', 'lockMovementX', 'lockMovementY', 'lockRotation', 'lockScalingX', 'lockScalingY',
     'hasControls', 'studioLocked', 'studioName', 'studioFx', 'studioCurve', 'studioFrame', 'studioKind'];
@@ -3740,7 +3741,7 @@ const Studio = (() => {
 // ===================================================================================
 fabric.Object.prototype.strokeUniform = true; // strokes keep their width when an object is resized
 
-const StudioLib = (() => {
+var StudioLib = (() => {
   const A = () => Studio.api;
   const cv = () => A().canvas();
   const EMOJI_FONT = "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
@@ -4276,7 +4277,7 @@ const StudioLib = (() => {
 // shape fill/stroke/gradient, curved text, photo editing (filters, crop, borders, frames,
 // shadows, manual background removal) for whatever is selected on the canvas.
 // ===================================================================================
-const StudioFx = (() => {
+var StudioFx = (() => {
   const A = () => Studio.api, cv = () => A().canvas();
   const esc = s => (typeof escapeHtml === 'function' ? escapeHtml(String(s == null ? '' : s)) : String(s));
   const openSecs = new Set(['pos', 'main']);
@@ -4594,7 +4595,7 @@ const StudioFx = (() => {
 // landscape thumbnail, wide banner). Includes search, category filter, favourites,
 // free/premium flags and live previews.
 // ===================================================================================
-const StudioTpl = (() => {
+var StudioTpl = (() => {
   const A = () => Studio.api, F = fabric;
   const EMOJI = "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
   const FONT = {
@@ -4990,7 +4991,7 @@ const StudioTpl = (() => {
 // size-preset library. Everything is generated from real Fabric objects so the result is
 // fully editable in the studio afterwards. No AI — pure layout code driven by a form.
 // ===================================================================================
-const StudioTools = (() => {
+var StudioTools = (() => {
   const F = fabric, A = () => Studio.api;
   const esc = s => (typeof escapeHtml === 'function' ? escapeHtml(String(s)) : String(s));
   const EMOJI = "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
@@ -5470,10 +5471,10 @@ const StudioTools = (() => {
 //  * Admin dashboard is only shown when profiles.is_admin = true. Client-side checks are only a
 //    convenience: real protection must come from the Row Level Security SQL in Admin → Setup.
 // ===================================================================================
-const StudioStore = (() => {
+var StudioStore = (() => {
   const A = () => Studio.api;
   const esc = s => (typeof escapeHtml === 'function' ? escapeHtml(String(s == null ? '' : s)) : String(s == null ? '' : s));
-  const CONFIG = { freeHiRes: false, freeTransparent: false, freePrintPdf: false, cloudEvery: 15000, maxUploads: 80, maxDesigns: 300 };
+  const CONFIG = { freeHiRes: false, freeTransparent: false, freePrintPdf: false, cloudEvery: 15000, maxUploads: 80, maxDesigns: 300, freeSaveLimit: 1 };
 
   // ------------------------------------------------------------------ IndexedDB
   let dbp = null;
@@ -5514,23 +5515,35 @@ const StudioStore = (() => {
       } catch (e) { resolve(''); }
     });
   }
-  async function autosave(doc, force) {
+  const saveLimit = () => { const v = window.STATE && STATE.settings && STATE.settings.free_save_limit; return v == null ? CONFIG.freeSaveLimit : Number(v); };
+  const noticed = new Set();
+  function limitNotice(id, explicit) {
+    setSaveState('Not saved — free limit reached');
+    if (explicit) { toast('Free plan allows ' + saveLimit() + ' saved design — upgrade to save more', true); if (window.goto) { goto('payment'); } return; }
+    if (!noticed.has(id)) { noticed.add(id); toast('Free plan: only ' + saveLimit() + ' saved design. This one is not being saved — upgrade or tap 💾 to see plans', true); }
+  }
+  async function autosave(doc, force, explicit) {
     if (!doc) return;
     if (isEmptyDoc(doc)) return;
     if (saving) { pending = doc; return; }
-    saving = true;
+    saving = true; let ok = false;
     try {
       if (!doc.id) { doc.id = uid(); A().setDocId(doc.id); }
       const prev = await getOne('designs', doc.id).catch(() => null);
+      if (!prev && plan() === 'free') { // free plan: only N saved designs (default 1), then a plan is needed
+        const mine = (await getAll('designs')).filter(d => !d.userId || d.userId === userId());
+        if (mine.length >= saveLimit()) { limitNotice(doc.id, explicit); saving = false; if (pending) { pending = null; } return false; }
+      }
       let thumb = prev && prev.thumb || '';
       if (!thumbBusy) { thumbBusy = true; thumb = (await thumbFromJSON(doc.pages[doc.pageIndex || 0], doc.width, doc.height, 260)) || thumb; thumbBusy = false; }
       const rec = { id: doc.id, userId: userId(), name: doc.name, kind: doc.kind, width: doc.width, height: doc.height, mm: doc.mm, pageIndex: doc.pageIndex, pages: doc.pages, thumb, updated: Date.now(), created: prev ? prev.created : Date.now() };
       await put('designs', rec);
-      setSaveState('Saved');
+      setSaveState('Saved'); ok = true;
       if (force || Date.now() - lastCloud > CONFIG.cloudEvery) cloudSave(rec);
     } catch (e) { console.warn('autosave failed', e); setSaveState('Not saved (storage full?)'); }
     saving = false;
     if (pending) { const p = pending; pending = null; autosave(p); }
+    return ok;
   }
   async function cloudSave(rec) {
     if (!cloudOK || !window.sb || !userId()) return;
@@ -5542,7 +5555,7 @@ const StudioStore = (() => {
   function saveNow(announce) {
     const doc = A().getDoc();
     if (isEmptyDoc(doc)) { if (announce) toast('Nothing to save yet'); return; }
-    autosave(doc, true).then(() => { if (announce) toast(cloudOK && userId() ? 'Saved (this device + cloud)' : 'Saved on this device'); });
+    autosave(doc, true, true).then(ok => { if (announce && ok) toast(cloudOK && userId() ? 'Saved (this device + cloud)' : 'Saved on this device'); });
   }
 
   // ------------------------------------------------------------------ enter: pull cloud + admin content
@@ -5679,6 +5692,7 @@ create table if not exists studio_designs (
   id uuid primary key, user_id uuid references auth.users(id) on delete cascade,
   name text, width int, height int, thumb text, doc jsonb, updated_at timestamptz default now());
 alter table studio_designs enable row level security;
+drop policy if exists "own studio designs" on studio_designs;
 create policy "own studio designs" on studio_designs for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Admin-managed content
@@ -5689,16 +5703,25 @@ create table if not exists studio_fonts (
   id uuid primary key default gen_random_uuid(), label text, css text, url text);
 alter table studio_templates enable row level security;
 alter table studio_fonts enable row level security;
+drop policy if exists "read templates" on studio_templates;
 create policy "read templates" on studio_templates for select using (auth.role() = 'authenticated');
+drop policy if exists "admin templates" on studio_templates;
 create policy "admin templates" on studio_templates for all using (is_studio_admin()) with check (is_studio_admin());
+drop policy if exists "read fonts" on studio_fonts;
 create policy "read fonts" on studio_fonts for select using (auth.role() = 'authenticated');
+drop policy if exists "admin fonts" on studio_fonts;
 create policy "admin fonts" on studio_fonts for all using (is_studio_admin()) with check (is_studio_admin());
 
 -- Let admins manage users, settings, payments and graphics (adjust if you already have policies)
+drop policy if exists "admin read profiles" on profiles;
 create policy "admin read profiles" on profiles for select using (is_studio_admin());
+drop policy if exists "admin update profiles" on profiles;
 create policy "admin update profiles" on profiles for update using (is_studio_admin());
+drop policy if exists "admin settings" on settings;
 create policy "admin settings" on settings for all using (is_studio_admin()) with check (is_studio_admin());
+drop policy if exists "admin read payments" on payments;
 create policy "admin read payments" on payments for select using (is_studio_admin());
+drop policy if exists "admin graphics" on store_assets;
 create policy "admin graphics" on store_assets for all using (is_studio_admin()) with check (is_studio_admin());`;
 
   let adTab = 'overview';
@@ -5785,7 +5808,7 @@ create policy "admin graphics" on store_assets for all using (is_studio_admin())
 // record it (Safari, recent Chrome), otherwise WebM. Clip audio is not mixed (music track only).
 // Runs entirely client-side; export happens in real time (a 20 s video takes ~20 s).
 // ===================================================================================
-const VideoMaker = (() => {
+var VideoMaker = (() => {
   const esc = s => (typeof escapeHtml === 'function' ? escapeHtml(String(s)) : String(s));
   const RATIOS = { '9:16': [720, 1280], '1:1': [1080, 1080], '16:9': [1280, 720], '4:5': [864, 1080] };
   const TRANS = [['fade', 'Fade'], ['slide', 'Slide'], ['zoom', 'Zoom'], ['none', 'Cut']];
