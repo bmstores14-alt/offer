@@ -3103,7 +3103,6 @@ create table if not exists studio_designs (
   updated_at timestamptz default now()
 );
 alter table studio_designs enable row level security;
-drop policy if exists "own studio designs" on studio_designs;
 create policy "own studio designs" on studio_designs for all
   using (auth.uid() = user_id) with check (auth.uid() = user_id);
 `;
@@ -4826,6 +4825,80 @@ var StudioTpl = (() => {
     return { bg: bgGrad(p, 165), objs: objs.concat(out) };
   };
 
+  // ---- extra layouts (v2) -------------------------------------------------------------
+  // Diagonal: bold headline on gradient, light diagonal panel with badge + emoji
+  L.diag = (W, H, c, p) => {
+    const u = Math.min(W, H), cx = W / 2, objs = [];
+    objs.push(rays(W, H, W * 0.2, H * 0.15, 'rgba(255,255,255,0.10)', 20));
+    objs.push(emoji(c.motif[0], W * 0.1, H * 0.085, u * 0.11, -12), emoji(c.motif[1], W * 0.9, H * 0.075, u * 0.1, 12));
+    objs.push(new F.Polygon([{ x: 0, y: H * 0.40 }, { x: W, y: H * 0.30 }, { x: W, y: H * 0.325 }, { x: 0, y: H * 0.425 }], { left: 0, top: H * 0.30, fill: p.accent }));
+    objs.push(new F.Polygon([{ x: 0, y: H * 0.425 }, { x: W, y: H * 0.325 }, { x: W, y: H }, { x: 0, y: H }], { left: 0, top: H * 0.325, fill: p.light }));
+    const tagW = Math.min(W * 0.7, c.tag.length * u * 0.034 + u * 0.14), tagH = u * 0.06;
+    objs.push(pill(cx, H * 0.065, tagW, tagH, p.accent), new F.Text(c.tag, { fontFamily: FONT.body, fontWeight: '800', fontSize: tagH * 0.46, fill: p.dark, charSpacing: 120, originX: 'center', originY: 'center', left: cx, top: H * 0.065 }));
+    objs.push(block(c.head, { x: cx, w: W * 0.86, css: p.headFont || FONT.anton, size: Math.min(u * 0.15, H * 0.1), fit: true, maxLines: 2, fill: '#ffffff', stroke: p.dark, lh: 1.04, shadow: shadowHard(p.dark, u * 0.01), spacing: 10 }).make(H * 0.19));
+    const bd = u * 0.27;
+    objs.push(new F.Group([shape('burst16', 0, 0, bd, p.accent), new F.Textbox(c.badge, { width: bd * 0.68, fontFamily: FONT.anton, fontSize: fitSize(c.badge, FONT.anton, bd * 0.62, 2, bd * 0.26, 16), fill: p.dark, textAlign: 'center', originX: 'center', originY: 'center', left: 0, top: 0, lineHeight: 0.95 })], { left: W * 0.8, top: H * 0.45, originX: 'center', originY: 'center', angle: 8, studioKind: 'multi', studioName: 'Offer badge' }));
+    objs.push(emoji(c.motif[2] || c.motif[0], W * 0.2, H * 0.46, u * 0.26, -8));
+    const ctaW = Math.min(W * 0.7, c.cta.length * u * 0.045 + u * 0.2), ctaH = u * 0.1;
+    const rest = [block(c.sub, { x: cx, w: W * 0.8, css: FONT.body, size: u * 0.05, fit: true, maxLines: 2, fill: p.ink, weight: '800' }),
+      solidBlock(ctaH, cy => [pill(cx, cy, ctaW, ctaH, p.bg[0]), new F.Text(c.cta, { fontFamily: FONT.body, fontWeight: '800', fontSize: ctaH * 0.42, fill: '#fff', originX: 'center', originY: 'center', left: cx, top: cy })]),
+      solidBlock(u * 0.04, cy => new F.Text(c.foot, { fontFamily: FONT.body, fontWeight: '700', fontSize: u * 0.032, fill: p.ink, originX: 'center', originY: 'center', left: cx, top: cy }))];
+    return { bg: bgGrad(p, 150), objs: objs.concat(flow(rest, H, H * 0.6, H * 0.03, u * 0.05)) };
+  };
+
+  // Ornate frame: double border, centre disc with emoji
+  L.frame = (W, H, c, p) => {
+    const u = Math.min(W, H), cx = W / 2, m = u * 0.045, objs = [];
+    objs.push(rays(W, H, cx, H * 0.45, 'rgba(255,255,255,0.09)', 28));
+    objs.push(rect(cx, H / 2, W - m * 2, H - m * 2, { fill: 'transparent', stroke: p.accent, strokeWidth: u * 0.008 }), rect(cx, H / 2, W - m * 3, H - m * 3, { fill: 'transparent', stroke: 'rgba(255,255,255,0.55)', strokeWidth: u * 0.003 }));
+    [[1, 1], [-1, 1], [1, -1], [-1, -1]].forEach(([sx, sy]) => objs.push(shape('star4', cx + sx * (W / 2 - m * 1.5), H / 2 + sy * (H / 2 - m * 1.5), u * 0.07, p.accent)));
+    const disc = Math.min(u * 0.4, H * 0.28), tagH = u * 0.06, tagW = Math.min(W * 0.7, c.tag.length * u * 0.034 + u * 0.14);
+    const ctaW = Math.min(W * 0.66, c.cta.length * u * 0.045 + u * 0.2), ctaH = u * 0.095;
+    const items = [
+      solidBlock(tagH, cy => [pill(cx, cy, tagW, tagH, p.accent), new F.Text(c.tag, { fontFamily: FONT.body, fontWeight: '800', fontSize: tagH * 0.46, fill: p.dark, charSpacing: 120, originX: 'center', originY: 'center', left: cx, top: cy })]),
+      block(c.head, { x: cx, w: W * 0.76, css: p.headFont || FONT.serif, size: Math.min(u * 0.12, H * 0.085), fit: true, maxLines: 2, fill: '#ffffff', weight: '900', lh: 1.05, shadow: shadowHard(p.dark, u * 0.006) }),
+      solidBlock(disc, cy => [circle(cx, cy, disc / 2, { fill: 'rgba(255,255,255,0.96)', stroke: p.accent, strokeWidth: u * 0.012 }), emoji(c.motif[0], cx, cy, disc * 0.58), emoji(c.motif[1], cx - disc * 0.52, cy - disc * 0.34, disc * 0.2, -12), emoji(c.motif[2] || c.motif[1], cx + disc * 0.52, cy + disc * 0.3, disc * 0.18, 12)]),
+      block(c.sub, { x: cx, w: W * 0.72, css: FONT.body, size: u * 0.045, fit: true, maxLines: 2, fill: '#ffffff', weight: '700' }),
+      solidBlock(ctaH, cy => [pill(cx, cy, ctaW, ctaH, p.accent), new F.Text(c.cta, { fontFamily: FONT.body, fontWeight: '800', fontSize: ctaH * 0.42, fill: p.dark, originX: 'center', originY: 'center', left: cx, top: cy })]),
+      solidBlock(u * 0.035, cy => new F.Text(c.foot, { fontFamily: FONT.body, fontWeight: '700', fontSize: u * 0.028, fill: 'rgba(255,255,255,.92)', originX: 'center', originY: 'center', left: cx, top: cy }))
+    ];
+    return { bg: bgGrad(p, 160), objs: objs.concat(flow(items, H, m * 2.4, m * 2.2, u * 0.045)) };
+  };
+
+  // Retail stripe: coloured header band, emoji disc, badge, accent footer bar
+  L.stripe = (W, H, c, p) => {
+    const u = Math.min(W, H), cx = W / 2, bandH = H * 0.24, objs = [];
+    objs.push(rect(cx, bandH / 2, W, bandH, { fill: p.bg[0] }), rect(cx, bandH, W, u * 0.014, { fill: p.accent }));
+    for (let i = 0; i < 9; i++) objs.push(rect(W * i / 8, bandH / 2, u * 0.03, bandH, { fill: 'rgba(255,255,255,0.07)', angle: 25 }));
+    objs.push(new F.Text(c.tag, { fontFamily: FONT.body, fontWeight: '800', fontSize: u * 0.03, fill: p.accent, charSpacing: 300, originX: 'center', originY: 'center', left: cx, top: bandH * 0.18 }));
+    objs.push(block(c.head, { x: cx, w: W * 0.88, css: p.headFont || FONT.anton, size: Math.min(u * 0.11, bandH * 0.4), fit: true, maxLines: 2, fill: '#ffffff', lh: 1.05 }).make(bandH * 0.6));
+    const r = Math.min(u * 0.2, H * 0.17), dy = H * 0.46;
+    objs.push(circle(cx, dy, r, { fill: p.bg[1], stroke: p.accent, strokeWidth: u * 0.012 }), emoji(c.motif[0], cx, dy, r * 1.15), emoji(c.motif[1], cx - r * 1.35, dy + r * 0.5, r * 0.4, -12), emoji(c.motif[2] || c.motif[1], cx - r * 1.2, dy - r * 0.7, r * 0.3, 10));
+    const bd = u * 0.22;
+    objs.push(new F.Group([shape('burst12', 0, 0, bd, p.accent), new F.Textbox(c.badge, { width: bd * 0.66, fontFamily: FONT.anton, fontSize: fitSize(c.badge, FONT.anton, bd * 0.6, 2, bd * 0.26, 14), fill: p.dark, textAlign: 'center', originX: 'center', originY: 'center', left: 0, top: 0, lineHeight: 0.95 })], { left: cx + r * 1.2, top: dy - r * 0.7, originX: 'center', originY: 'center', angle: 12, studioKind: 'multi', studioName: 'Badge' }));
+    objs.push(block(c.sub, { x: cx, w: W * 0.82, css: FONT.body, size: u * 0.05, fit: true, maxLines: 2, fill: p.ink, weight: '800' }).make(H * 0.72));
+    const barH = H * 0.14;
+    objs.push(rect(cx, H - barH / 2, W, barH, { fill: p.accent }), new F.Text(c.cta, { fontFamily: FONT.body, fontWeight: '800', fontSize: fitSize(c.cta, FONT.body, W * 0.84, u * 0.056, '800'), fill: p.dark, originX: 'center', originY: 'center', left: cx, top: H - barH * 0.64 }), new F.Text(c.foot, { fontFamily: FONT.body, fontWeight: '700', fontSize: u * 0.03, fill: p.dark, originX: 'center', originY: 'center', left: cx, top: H - barH * 0.25 }));
+    return { bg: p.light, objs };
+  };
+
+  // Neon night: dark gradient, glowing headline and outlined button
+  L.neon = (W, H, c, p) => {
+    const u = Math.min(W, H), cx = W / 2, m = u * 0.05, glow = p.accent, objs = [], gl = { color: glow, blur: 30, offsetX: 0, offsetY: 0 };
+    objs.push(circle(W * 0.85, H * 0.12, u * 0.3, { fill: 'rgba(255,255,255,0.05)' }), circle(W * 0.1, H * 0.85, u * 0.34, { fill: 'rgba(255,255,255,0.04)' }));
+    objs.push(rect(cx, H / 2, W - m * 2, H - m * 2, { fill: 'transparent', stroke: glow, strokeWidth: u * 0.006, rx: u * 0.04, ry: u * 0.04, shadow: new F.Shadow(gl) }));
+    const disc = Math.min(u * 0.34, H * 0.24), ctaW = Math.min(W * 0.66, c.cta.length * u * 0.045 + u * 0.2), ctaH = u * 0.095;
+    const items = [
+      block(c.tag, { x: cx, w: W * 0.8, css: FONT.body, size: u * 0.034, fill: glow, weight: '800', spacing: 400 }),
+      block(c.head, { x: cx, w: W * 0.8, css: p.headFont || FONT.anton, size: Math.min(u * 0.14, H * 0.1), fit: true, maxLines: 2, fill: '#ffffff', lh: 1.05, shadow: { color: glow, blur: 40, offsetX: 0, offsetY: 0 }, spacing: 20 }),
+      solidBlock(disc, cy => [emoji(c.motif[0], cx, cy, disc * 0.85), emoji(c.motif[1], cx - disc * 0.7, cy - disc * 0.2, disc * 0.25, -10), emoji(c.motif[2] || c.motif[1], cx + disc * 0.7, cy + disc * 0.15, disc * 0.22, 10)]),
+      block(c.sub, { x: cx, w: W * 0.72, css: FONT.body, size: u * 0.045, fit: true, maxLines: 2, fill: 'rgba(255,255,255,.9)', weight: '600' }),
+      solidBlock(ctaH, cy => [pill(cx, cy, ctaW, ctaH, 'transparent', { stroke: glow, strokeWidth: u * 0.006, shadow: new F.Shadow(gl) }), new F.Text(c.cta, { fontFamily: FONT.body, fontWeight: '800', fontSize: ctaH * 0.42, fill: glow, originX: 'center', originY: 'center', left: cx, top: cy })]),
+      solidBlock(u * 0.035, cy => new F.Text(c.foot, { fontFamily: FONT.body, fontWeight: '700', fontSize: u * 0.028, fill: 'rgba(255,255,255,.75)', originX: 'center', originY: 'center', left: cx, top: cy }))
+    ];
+    return { bg: { type: 'gradient', c1: p.dark, c2: p.bg[0], angle: 180 }, objs: objs.concat(flow(items, H, m * 2.2, m * 2.2, u * 0.05)) };
+  };
+
   // ------------------------------------------------------------------ categories
   const FOOT = '📞 98765 43210   📍 Your Location';
   const SZ = { post: [1080, 1080], port: [1080, 1350], story: [1080, 1920], thumb: [1280, 720], fb: [1200, 630], banner: [1920, 600], a4: [1240, 1754] };
@@ -4861,14 +4934,6 @@ var StudioTpl = (() => {
     ['banner', 'Business Banners', 'banner', ['wide', 'teal'], ['wide', 'fire'], ['🛍️', '🎁', '🔥'], 'GRAND OPENING SALE', 'WELCOME OFFER', 'Everything at special launch prices.', 'Shop Now', 'NEW'],
     ['product', 'Product Advertisements', 'post', ['photo', 'ocean'], ['burst', 'navy'], ['📦', '⭐', '🚚'], 'NEW ARRIVAL', 'JUST LAUNCHED', 'Premium quality at an affordable price. Free delivery.', 'Order Now', 'NEW\nLAUNCH']
   ];
-  // Malayalam extras (headline in Malayalam script)
-  const ML_EXTRA = [
-    { id: 'ml-offer', cat: 'offer', name: 'മെഗാ ഓഫർ', layout: 'burst', pal: 'fire', size: 'port', motif: ['🔥', '🎁', '💥'], head: 'മെഗാ ഓഫർ', tag: 'ഇന്ന് മാത്രം', sub: 'എല്ലാ സാധനങ്ങൾക്കും വമ്പിച്ച വിലക്കുറവ്. വേഗം വരൂ!', cta: 'ഇപ്പോൾ വാങ്ങൂ', badge: '50%\nകിഴിവ്', headFont: FONT.ml },
-    { id: 'ml-festival', cat: 'festival', name: 'ഉത്സവ ആശംസകൾ', layout: 'split', pal: 'sun', size: 'port', motif: ['🪔', '🎆', '✨'], head: 'ഉത്സവ ആശംസകൾ', tag: 'ആശംസകൾ', sub: 'സന്തോഷവും സമൃദ്ധിയും നിറഞ്ഞ ഒരു ഉത്സവകാലം നേരുന്നു.', cta: 'ഉത്സവ ഓഫറുകൾ', badge: 'ഓഫർ', headFont: FONT.ml },
-    { id: 'ml-eid', cat: 'eid', name: 'ഈദ് മുബാറക്', layout: 'invite', pal: 'gold', size: 'post', dark: true, motif: ['🌙', '✨', '🕌'], head: 'ഈദ് മുബാറക്', tag: 'ഈദ് ആശംസകൾ', sub: 'ഏവർക്കും ഹൃദയം നിറഞ്ഞ ഈദ് ആശംസകൾ', cta: 'ഈദ് കളക്ഷൻ', badge: 'ഈദ്', headFont: FONT.ml, invite: { kicker: 'ഹൃദയം നിറഞ്ഞ ആശംസകൾ', names: 'ഈദ് മുബാറക്', line1: 'നിങ്ങളുടെ ജീവിതത്തിൽ സന്തോഷം നിറയട്ടെ', line2: 'കുടുംബത്തോടൊപ്പം ആഘോഷിക്കൂ', line3: 'നിങ്ങളുടെ കടയുടെ പേര്' } },
-    { id: 'ml-onam', cat: 'festival', name: 'ഓണാശംസകൾ', layout: 'burst', pal: 'forest', size: 'port', motif: ['🌼', '🍌', '🌺'], head: 'ഓണാശംസകൾ', tag: 'തിരുവോണം', sub: 'ഓണം ഓഫറുകൾ ഇപ്പോൾ ആരംഭിച്ചു. എല്ലാ ഉൽപ്പന്നങ്ങൾക്കും കിഴിവ്.', cta: 'ഓണം ഓഫർ', badge: 'ഓണം\nസ്പെഷ്യൽ', headFont: FONT.ml }
-  ];
-
   const templates = [];
   CATS.forEach((c, ci) => {
     const [id, label, sz, A_, B_, motif, head, tag, sub, cta, badge, invite] = c;
@@ -4876,17 +4941,133 @@ var StudioTpl = (() => {
       templates.push({ id: `${id}-${vi + 1}`, cat: id, catLabel: label, name: `${label.replace(/ (Posters|Invitations|Advertisements|Thumbnails|Posts|Stories|Banners|Status)$/, '')} ${vi + 1}`, size: sz, layout: v[0], pal: v[1], opts: v[2] || {}, motif, head, tag, sub, cta, badge, invite, foot: FOOT, premium: (ci * 2 + vi) % 4 === 3 });
     });
   });
-  ML_EXTRA.forEach(m => templates.push(Object.assign({ catLabel: CATS.find(c => c[0] === m.cat)[1], foot: FOOT, premium: false, opts: m.dark ? { dark: true } : {} }, m)));
+  // ------------------------------------------------------------------ multilingual packs (v2)
+  // Languages: English, Malayalam, Tamil, Kannada, Hindi. Each pack drives 3 layouts per category.
+  const LANGS = { en: 'English', ml: 'മലയാളം', ta: 'தமிழ்', kn: 'ಕನ್ನಡ', hi: 'हिन्दी' };
+  const LANG_TAGS = { en: 'english', ml: 'malayalam മലയാളം', ta: 'tamil தமிழ்', kn: 'kannada ಕನ್ನಡ', hi: 'hindi हिन्दी' };
+  const LF = { ml: "'Baloo Chettan 2','Noto Sans Malayalam',sans-serif", ta: "'Baloo Thambi 2','Noto Sans Tamil',sans-serif", kn: "'Baloo Tamma 2','Noto Sans Kannada',sans-serif", hi: "'Baloo 2','Noto Sans Devanagari',sans-serif" };
+  Object.values(LF).forEach(f => { FACT[f] = 0.82; });
+  const LFOOT = { en: 'Your Location', ml: 'നിങ്ങളുടെ സ്ഥലം', ta: 'உங்கள் இடம்', kn: 'ನಿಮ್ಮ ಸ್ಥಳ', hi: 'आपका स्थान' };
+  const P = (head, tag, sub, cta, badge, inv) => ({ head, tag, sub, cta, badge, inv });
+  const PACKS = {
+    en: {
+      offer: P('MEGA OFFER', 'TODAY ONLY', 'Huge discounts on everything. Hurry!', 'Shop Now', '50%\nOFF'),
+      sale: P('BIG SALE', 'SEASON END', "Up to 70% off. Don't miss this chance!", 'Shop Now', 'UP TO\n70%'),
+      festival: P('HAPPY FESTIVAL', 'GREETINGS', 'Wishing you a festival full of joy and prosperity.', 'Festive Offers', 'FESTIVE\nOFFER'),
+      eid: P('EID MUBARAK', 'EID GREETINGS', 'Heartfelt Eid wishes to you and your family.', 'Eid Collection', 'EID\nSALE'),
+      birthday: P('HAPPY BIRTHDAY', 'CELEBRATE', 'A day full of love and laughter!', 'Join the Party', 'WISH'),
+      wedding: P('WEDDING INVITATION', 'SAVE THE DATE', 'We joyfully invite you to our wedding', 'RSVP', 'WED', { kicker: 'TOGETHER WITH THEIR FAMILIES', names: 'Aisha  &  Rahul', line1: 'Saturday, 12 December 2026  •  11:00 AM', line2: 'Royal Garden Auditorium, Your City', line3: 'RSVP: 98765 43210' }),
+      food: P('TASTE THE FESTIVAL', 'FRESH & HOT', 'Delicious food made with love.', 'Order Now', 'HOME\nDELIVERY'),
+      jewellery: P('GOLD COLLECTION', 'NEW ARRIVALS', 'Beautiful designs for every celebration.', 'Visit Showroom', 'LOW\nMAKING'),
+      education: P('ADMISSIONS OPEN', 'NEW ACADEMIC YEAR', 'Experienced teachers and modern facilities.', 'Join Today', 'LIMITED\nSEATS'),
+      realestate: P('DREAM HOME FOR SALE', 'PREMIUM VILLAS', 'Spacious 3 BHK homes at a prime location.', 'Book a Visit', 'READY\nTO MOVE'),
+      event: P('LIVE EVENT', "DON'T MISS", 'Music, food and fun for the whole family.', 'Get Tickets', 'FREE\nENTRY'),
+      business: P('GROW YOUR BUSINESS', 'SMART SOLUTIONS', 'Services that take your brand to the next level.', 'Contact Us Now', 'BEST\nPRICE'),
+      fashion: P('NEW COLLECTION', 'FASHION WEEK', 'Discover the latest trends of the season.', 'Explore Now', 'NEW'),
+      opening: P('GRAND OPENING', 'STARTS TOMORROW', 'Special launch offers — everyone is welcome!', 'Visit Us', 'OPENING\nOFFER')
+    },
+    ml: {
+      offer: P('മെഗാ ഓഫർ', 'ഇന്ന് മാത്രം', 'എല്ലാ സാധനങ്ങൾക്കും വമ്പിച്ച വിലക്കുറവ്. വേഗം വരൂ!', 'ഇപ്പോൾ വാങ്ങൂ', '50%\nകിഴിവ്'),
+      sale: P('വമ്പൻ സെയിൽ', 'സീസൺ എൻഡ്', '70% വരെ വിലക്കുറവ്. ഈ അവസരം നഷ്ടപ്പെടുത്തരുത്!', 'ഇപ്പോൾ വാങ്ങൂ', '70% വരെ'),
+      festival: P('ഉത്സവ ആശംസകൾ', 'ആശംസകൾ', 'സന്തോഷവും സമൃദ്ധിയും നിറഞ്ഞ ഉത്സവകാലം നേരുന്നു.', 'ഉത്സവ ഓഫറുകൾ', 'ഉത്സവ\nഓഫർ'),
+      eid: P('ഈദ് മുബാറക്', 'ഈദ് ആശംസകൾ', 'ഏവർക്കും ഹൃദയം നിറഞ്ഞ ഈദ് ആശംസകൾ.', 'ഈദ് കളക്ഷൻ', 'ഈദ്\nസെയിൽ'),
+      birthday: P('ജന്മദിനാശംസകൾ', 'ആഘോഷം', 'സ്നേഹവും ചിരിയും നിറഞ്ഞ ഒരു ദിനം ആശംസിക്കുന്നു.', 'പാർട്ടിക്ക് വരൂ', 'ആശംസ'),
+      wedding: P('വിവാഹ ക്ഷണം', 'സേവ് ദ ഡേറ്റ്', 'ഞങ്ങളുടെ വിവാഹത്തിലേക്ക് സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു', 'ക്ഷണിക്കുന്നു', 'വിവാഹം', { kicker: 'കുടുംബങ്ങളുടെ സ്നേഹപൂർവ്വമായ ക്ഷണം', names: 'ആയിഷ  &  രാഹുൽ', line1: '2026 ഡിസംബർ 12, ശനി  •  രാവിലെ 11:00', line2: 'റോയൽ ഗാർഡൻ ഓഡിറ്റോറിയം', line3: 'വിളിക്കുക: 98765 43210' }),
+      food: P('രുചിയുടെ ഉത്സവം', 'ഫ്രഷ് & ഹോട്ട്', 'സ്നേഹത്തോടെ തയ്യാറാക്കിയ രുചികരമായ ഭക്ഷണം.', 'ഇപ്പോൾ ഓർഡർ ചെയ്യൂ', 'ഹോം\nഡെലിവറി'),
+      jewellery: P('സ്വർണ്ണാഭരണ ശേഖരം', 'പുതിയ കളക്ഷൻ', 'എല്ലാ ആഘോഷങ്ങൾക്കും ഇണങ്ങുന്ന മനോഹര ഡിസൈനുകൾ.', 'ഷോറൂം സന്ദർശിക്കൂ', 'കുറഞ്ഞ\nപണിക്കൂലി'),
+      education: P('അഡ്മിഷൻ ആരംഭിച്ചു', 'പുതിയ അധ്യയന വർഷം', 'മികച്ച അധ്യാപകരും ആധുനിക സൗകര്യങ്ങളും.', 'ഇന്ന് തന്നെ ചേരൂ', 'പരിമിത\nസീറ്റുകൾ'),
+      realestate: P('സ്വപ്ന ഭവനം വിൽപ്പനയ്ക്ക്', 'പ്രീമിയം വില്ലകൾ', 'പ്രധാന സ്ഥലത്ത് വിശാലമായ 3 BHK വീടുകൾ.', 'സന്ദർശനം ബുക്ക് ചെയ്യൂ', 'റെഡി\nടു മൂവ്'),
+      event: P('ലൈവ് പരിപാടി', 'നഷ്ടപ്പെടുത്തരുത്', 'സംഗീതം, ഭക്ഷണം, വിനോദം — കുടുംബത്തോടൊപ്പം ആസ്വദിക്കൂ.', 'ടിക്കറ്റ് എടുക്കൂ', 'പ്രവേശനം\nസൗജന്യം'),
+      business: P('നിങ്ങളുടെ ബിസിനസ് വളർത്തൂ', 'സ്മാർട്ട് സൊല്യൂഷൻസ്', 'നിങ്ങളുടെ ബ്രാൻഡിനെ അടുത്ത തലത്തിലെത്തിക്കുന്ന സേവനങ്ങൾ.', 'ഇപ്പോൾ ബന്ധപ്പെടൂ', 'മികച്ച\nവില'),
+      fashion: P('പുതിയ കളക്ഷൻ', 'ഫാഷൻ വീക്ക്', 'ഈ സീസണിലെ ഏറ്റവും പുതിയ ട്രെൻഡുകൾ കണ്ടെത്തൂ.', 'ഇപ്പോൾ കാണൂ', 'പുതിയത്'),
+      opening: P('ഗ്രാൻഡ് ഉദ്ഘാടനം', 'നാളെ മുതൽ', 'ഉദ്ഘാടന ഓഫറുകൾ — എല്ലാവർക്കും സ്വാഗതം!', 'വരൂ, സ്വാഗതം', 'ഉദ്ഘാടന\nഓഫർ')
+    },
+    ta: {
+      offer: P('மெகா ஆஃபர்', 'இன்று மட்டும்', 'அனைத்து பொருட்களுக்கும் அதிரடி தள்ளுபடி. உடனே வாருங்கள்!', 'இப்போதே வாங்குங்கள்', '50%\nதள்ளுபடி'),
+      sale: P('பெரிய விற்பனை', 'சீசன் முடிவு', '70% வரை தள்ளுபடி. இந்த வாய்ப்பை தவறவிடாதீர்கள்!', 'இப்போதே வாங்குங்கள்', '70% வரை'),
+      festival: P('பண்டிகை வாழ்த்துகள்', 'வாழ்த்துகள்', 'மகிழ்ச்சியும் செழிப்பும் நிறைந்த பண்டிகை காலம் அமையட்டும்.', 'பண்டிகை சலுகைகள்', 'பண்டிகை\nசலுகை'),
+      eid: P('ஈத் முபாரக்', 'ஈத் வாழ்த்துகள்', 'அனைவருக்கும் இனிய ஈத் நல்வாழ்த்துகள்.', 'ஈத் கலெக்ஷன்', 'ஈத்\nசலுகை'),
+      birthday: P('பிறந்தநாள் வாழ்த்துகள்', 'கொண்டாட்டம்', 'அன்பும் சிரிப்பும் நிறைந்த நாளாக அமையட்டும்.', 'விழாவுக்கு வாருங்கள்', 'வாழ்த்து'),
+      wedding: P('திருமண அழைப்பிதழ்', 'தேதி குறித்துக்கொள்ளுங்கள்', 'எங்கள் திருமணத்திற்கு அன்புடன் அழைக்கிறோம்', 'அழைக்கிறோம்', 'திருமணம்', { kicker: 'குடும்பத்தினரின் அன்பான அழைப்பு', names: 'ஆயிஷா  &  ராகுல்', line1: '12 டிசம்பர் 2026, சனி  •  காலை 11:00', line2: 'ராயல் கார்டன் மண்டபம்', line3: 'தொடர்புக்கு: 98765 43210' }),
+      food: P('சுவையின் திருவிழா', 'சூடான & புதிய', 'அன்புடன் தயாரிக்கப்பட்ட சுவையான உணவு.', 'இப்போதே ஆர்டர் செய்யுங்கள்', 'வீட்டு\nடெலிவரி'),
+      jewellery: P('தங்க நகை சேகரிப்பு', 'புதிய வடிவமைப்புகள்', 'ஒவ்வொரு விழாவிற்கும் ஏற்ற அழகிய நகைகள்.', 'கடைக்கு வாருங்கள்', 'குறைந்த\nசெய்கூலி'),
+      education: P('சேர்க்கை தொடங்கியது', 'புதிய கல்வியாண்டு', 'சிறந்த ஆசிரியர்கள், நவீன வசதிகள்.', 'இன்றே சேருங்கள்', 'குறைந்த\nஇடங்கள்'),
+      realestate: P('கனவு இல்லம் விற்பனைக்கு', 'பிரீமியம் வில்லாக்கள்', 'முக்கிய இடத்தில் விசாலமான 3 BHK வீடுகள்.', 'பார்வையிட பதிவு செய்யுங்கள்', 'உடனே\nகுடியேறலாம்'),
+      event: P('நேரலை நிகழ்ச்சி', 'தவறவிடாதீர்கள்', 'இசை, உணவு, பொழுதுபோக்கு — குடும்பத்துடன் மகிழுங்கள்.', 'டிக்கெட் பெறுங்கள்', 'அனுமதி\nஇலவசம்'),
+      business: P('உங்கள் தொழிலை வளர்த்திடுங்கள்', 'ஸ்மார்ட் தீர்வுகள்', 'உங்கள் பிராண்டை அடுத்த நிலைக்கு உயர்த்தும் சேவைகள்.', 'இப்போதே தொடர்பு கொள்ளுங்கள்', 'சிறந்த\nவிலை'),
+      fashion: P('புதிய கலெக்ஷன்', 'ஃபேஷன் வாரம்', 'இந்த சீசனின் புதிய டிரெண்டுகளைக் கண்டறியுங்கள்.', 'இப்போதே பாருங்கள்', 'புதியது'),
+      opening: P('மாபெரும் திறப்பு விழா', 'நாளை முதல்', 'திறப்பு விழா சலுகைகள் — அனைவரும் வருக!', 'வருக வருக', 'திறப்பு\nசலுகை')
+    },
+    kn: {
+      offer: P('ಮೆಗಾ ಆಫರ್', 'ಇಂದು ಮಾತ್ರ', 'ಎಲ್ಲಾ ವಸ್ತುಗಳ ಮೇಲೆ ಭಾರಿ ರಿಯಾಯಿತಿ. ಬೇಗ ಬನ್ನಿ!', 'ಈಗಲೇ ಖರೀದಿಸಿ', '50%\nರಿಯಾಯಿತಿ'),
+      sale: P('ಬಿಗ್ ಸೇಲ್', 'ಸೀಸನ್ ಕೊನೆ', '70% ವರೆಗೆ ರಿಯಾಯಿತಿ. ಈ ಅವಕಾಶ ತಪ್ಪಿಸಿಕೊಳ್ಳಬೇಡಿ!', 'ಈಗಲೇ ಖರೀದಿಸಿ', '70% ವರೆಗೆ'),
+      festival: P('ಹಬ್ಬದ ಶುಭಾಶಯಗಳು', 'ಶುಭಾಶಯಗಳು', 'ಸಂತೋಷ ಮತ್ತು ಸಮೃದ್ಧಿ ತುಂಬಿದ ಹಬ್ಬ ನಿಮ್ಮದಾಗಲಿ.', 'ಹಬ್ಬದ ಆಫರ್‌ಗಳು', 'ಹಬ್ಬದ\nಆಫರ್'),
+      eid: P('ಈದ್ ಮುಬಾರಕ್', 'ಈದ್ ಶುಭಾಶಯಗಳು', 'ಎಲ್ಲರಿಗೂ ಹೃದಯಪೂರ್ವಕ ಈದ್ ಶುಭಾಶಯಗಳು.', 'ಈದ್ ಕಲೆಕ್ಷನ್', 'ಈದ್\nಆಫರ್'),
+      birthday: P('ಜನ್ಮದಿನದ ಶುಭಾಶಯಗಳು', 'ಸಂಭ್ರಮ', 'ಪ್ರೀತಿ ಮತ್ತು ನಗು ತುಂಬಿದ ದಿನ ನಿಮ್ಮದಾಗಲಿ.', 'ಪಾರ್ಟಿಗೆ ಬನ್ನಿ', 'ಶುಭಾಶಯ'),
+      wedding: P('ವಿವಾಹ ಆಹ್ವಾನ', 'ದಿನಾಂಕ ಗುರುತಿಸಿ', 'ನಮ್ಮ ವಿವಾಹಕ್ಕೆ ಪ್ರೀತಿಯಿಂದ ಆಹ್ವಾನಿಸುತ್ತೇವೆ', 'ಆಹ್ವಾನ', 'ವಿವಾಹ', { kicker: 'ಕುಟುಂಬದವರ ಪ್ರೀತಿಯ ಆಹ್ವಾನ', names: 'ಆಯಿಷಾ  &  ರಾಹುಲ್', line1: '12 ಡಿಸೆಂಬರ್ 2026, ಶನಿವಾರ  •  ಬೆಳಿಗ್ಗೆ 11:00', line2: 'ರಾಯಲ್ ಗಾರ್ಡನ್ ಸಭಾಂಗಣ', line3: 'ಸಂಪರ್ಕಿಸಿ: 98765 43210' }),
+      food: P('ರುಚಿಯ ಹಬ್ಬ', 'ಬಿಸಿ & ತಾಜಾ', 'ಪ್ರೀತಿಯಿಂದ ತಯಾರಿಸಿದ ರುಚಿಕರ ಊಟ.', 'ಈಗಲೇ ಆರ್ಡರ್ ಮಾಡಿ', 'ಹೋಮ್\nಡೆಲಿವರಿ'),
+      jewellery: P('ಚಿನ್ನಾಭರಣ ಸಂಗ್ರಹ', 'ಹೊಸ ಕಲೆಕ್ಷನ್', 'ಪ್ರತಿ ಸಂಭ್ರಮಕ್ಕೂ ಹೊಂದುವ ಸುಂದರ ವಿನ್ಯಾಸಗಳು.', 'ಶೋರೂಂಗೆ ಬನ್ನಿ', 'ಕಡಿಮೆ\nಮೇಕಿಂಗ್'),
+      education: P('ಪ್ರವೇಶ ಆರಂಭ', 'ಹೊಸ ಶೈಕ್ಷಣಿಕ ವರ್ಷ', 'ಅನುಭವಿ ಶಿಕ್ಷಕರು ಮತ್ತು ಆಧುನಿಕ ಸೌಲಭ್ಯಗಳು.', 'ಇಂದೇ ಸೇರಿ', 'ಸೀಮಿತ\nಸೀಟುಗಳು'),
+      realestate: P('ಕನಸಿನ ಮನೆ ಮಾರಾಟಕ್ಕೆ', 'ಪ್ರೀಮಿಯಂ ವಿಲ್ಲಾಗಳು', 'ಪ್ರಮುಖ ಸ್ಥಳದಲ್ಲಿ ವಿಶಾಲವಾದ 3 BHK ಮನೆಗಳು.', 'ಭೇಟಿಗೆ ಬುಕ್ ಮಾಡಿ', 'ತಕ್ಷಣ\nವಾಸಕ್ಕೆ'),
+      event: P('ಲೈವ್ ಕಾರ್ಯಕ್ರಮ', 'ತಪ್ಪಿಸಿಕೊಳ್ಳಬೇಡಿ', 'ಸಂಗೀತ, ಊಟ, ಮನರಂಜನೆ — ಕುಟುಂಬದೊಂದಿಗೆ ಆನಂದಿಸಿ.', 'ಟಿಕೆಟ್ ಪಡೆಯಿರಿ', 'ಪ್ರವೇಶ\nಉಚಿತ'),
+      business: P('ನಿಮ್ಮ ವ್ಯಾಪಾರ ಬೆಳೆಸಿ', 'ಸ್ಮಾರ್ಟ್ ಪರಿಹಾರಗಳು', 'ನಿಮ್ಮ ಬ್ರಾಂಡ್ ಅನ್ನು ಮುಂದಿನ ಹಂತಕ್ಕೆ ಕೊಂಡೊಯ್ಯುವ ಸೇವೆಗಳು.', 'ಈಗಲೇ ಸಂಪರ್ಕಿಸಿ', 'ಉತ್ತಮ\nಬೆಲೆ'),
+      fashion: P('ಹೊಸ ಕಲೆಕ್ಷನ್', 'ಫ್ಯಾಷನ್ ವೀಕ್', 'ಈ ಸೀಸನ್‌ನ ಹೊಸ ಟ್ರೆಂಡ್‌ಗಳನ್ನು ಅನ್ವೇಷಿಸಿ.', 'ಈಗಲೇ ನೋಡಿ', 'ಹೊಸದು'),
+      opening: P('ಭವ್ಯ ಉದ್ಘಾಟನೆ', 'ನಾಳೆಯಿಂದ', 'ಉದ್ಘಾಟನಾ ಆಫರ್‌ಗಳು — ಎಲ್ಲರಿಗೂ ಸ್ವಾಗತ!', 'ಬನ್ನಿ, ಸ್ವಾಗತ', 'ಉದ್ಘಾಟನಾ\nಆಫರ್')
+    },
+    hi: {
+      offer: P('मेगा ऑफर', 'सिर्फ आज', 'सभी सामान पर भारी छूट। जल्दी आइए!', 'अभी खरीदें', '50%\nछूट'),
+      sale: P('बड़ी सेल', 'सीज़न एंड', '70% तक की छूट। यह मौका न चूकें!', 'अभी खरीदें', '70% तक'),
+      festival: P('त्योहार की शुभकामनाएँ', 'शुभकामनाएँ', 'खुशियों और समृद्धि से भरा त्योहार आपको मुबारक हो।', 'त्योहार ऑफर', 'त्योहार\nऑफर'),
+      eid: P('ईद मुबारक', 'ईद की शुभकामनाएँ', 'आप सभी को ईद की दिली मुबारकबाद।', 'ईद कलेक्शन', 'ईद\nसेल'),
+      birthday: P('जन्मदिन की शुभकामनाएँ', 'जश्न', 'प्यार और हँसी से भरा दिन आपको मुबारक हो।', 'पार्टी में आइए', 'बधाई'),
+      wedding: P('विवाह निमंत्रण', 'तारीख याद रखें', 'हमारे विवाह में आपका हार्दिक स्वागत है', 'निमंत्रण', 'विवाह', { kicker: 'दोनों परिवारों की ओर से निमंत्रण', names: 'आयशा  &  राहुल', line1: '12 दिसंबर 2026, शनिवार  •  सुबह 11:00', line2: 'रॉयल गार्डन ऑडिटोरियम', line3: 'संपर्क: 98765 43210' }),
+      food: P('स्वाद का त्योहार', 'ताज़ा और गरम', 'प्यार से बना स्वादिष्ट खाना।', 'अभी ऑर्डर करें', 'होम\nडिलीवरी'),
+      jewellery: P('स्वर्ण आभूषण संग्रह', 'नया कलेक्शन', 'हर उत्सव के लिए खूबसूरत डिज़ाइन।', 'शोरूम पधारें', 'कम\nमेकिंग'),
+      education: P('प्रवेश प्रारंभ', 'नया शैक्षणिक सत्र', 'अनुभवी शिक्षक और आधुनिक सुविधाएँ।', 'आज ही जुड़ें', 'सीमित\nसीटें'),
+      realestate: P('सपनों का घर बिकाऊ', 'प्रीमियम विला', 'प्रमुख स्थान पर विशाल 3 BHK घर।', 'साइट विज़िट बुक करें', 'तैयार\nघर'),
+      event: P('लाइव कार्यक्रम', 'चूकिएगा नहीं', 'संगीत, खाना, मनोरंजन — परिवार के साथ आनंद लें।', 'टिकट लें', 'प्रवेश\nमुफ़्त'),
+      business: P('अपना बिज़नेस बढ़ाएँ', 'स्मार्ट समाधान', 'आपके ब्रांड को अगले स्तर तक ले जाने वाली सेवाएँ।', 'आज ही संपर्क करें', 'बेस्ट\nप्राइस'),
+      fashion: P('नया कलेक्शन', 'फ़ैशन वीक', 'इस सीज़न के लेटेस्ट ट्रेंड्स देखें।', 'अभी देखें', 'नया'),
+      opening: P('भव्य उद्घाटन', 'कल से', 'उद्घाटन ऑफर — सभी का स्वागत है!', 'पधारिए', 'उद्घाटन\nऑफर')
+    }
+  };
+  const CAT_META = { // id: [English label, motifs, [layout, palette, opts?] x3]
+    offer: ['Offer Posters', ['🔥', '🎁', '💥'], [['burst', 'fire'], ['diag', 'royal'], ['stripe', 'sun']]],
+    sale: ['Sale Posters', ['🛍️', '⚡', '🎯'], [['diag', 'navy'], ['stripe', 'fire'], ['neon', 'night']]],
+    festival: ['Festival Posters', ['🪔', '🎆', '✨'], [['frame', 'sun'], ['burst', 'royal'], ['split', 'emerald']]],
+    eid: ['Eid Posters', ['🌙', '🕌', '⭐'], [['frame', 'emerald'], ['invite', 'gold', { dark: true }], ['neon', 'teal']]],
+    birthday: ['Birthday Posters', ['🎂', '🎈', '🎉'], [['burst', 'berry'], ['stripe', 'rose'], ['frame', 'ocean']]],
+    wedding: ['Wedding Invitations', ['💍', '💐', '✨'], [['invite', 'cream', { script: true }], ['invite', 'gold', { dark: true, script: true }], ['frame', 'rose']]],
+    food: ['Food Posters', ['🍛', '🍔', '🍕'], [['photo', 'sun'], ['diag', 'fire'], ['stripe', 'forest']]],
+    jewellery: ['Jewellery Posters', ['💍', '💎', '👑'], [['invite', 'gold', { dark: true }], ['frame', 'royal'], ['neon', 'gold']]],
+    education: ['Education Posters', ['🎓', '📚', '✏️'], [['split', 'ocean'], ['stripe', 'navy'], ['minimal', 'forest']]],
+    realestate: ['Real Estate Posters', ['🏠', '🔑', '🏡'], [['photo', 'navy'], ['diag', 'forest'], ['minimal', 'teal']]],
+    event: ['Event Posters', ['🎤', '🎶', '🎉'], [['neon', 'royal'], ['burst', 'night'], ['diag', 'berry']]],
+    business: ['Business Posters', ['💼', '📈', '🤝'], [['minimal', 'teal'], ['split', 'navy'], ['stripe', 'night']]],
+    fashion: ['Fashion Posters', ['👗', '👠', '👜'], [['minimal', 'rose'], ['frame', 'berry'], ['diag', 'night']]],
+    opening: ['Grand Opening', ['🎊', '🎀', '✨'], [['burst', 'royal'], ['stripe', 'fire'], ['frame', 'teal']]]
+  };
+  const V2_SIZES = ['port', 'post', 'port'];
+  let v2n = 0;
+  Object.keys(LANGS).forEach(lang => Object.keys(CAT_META).forEach(cat => {
+    const [catLabel, motif, sets] = CAT_META[cat], pk = PACKS[lang][cat];
+    sets.forEach((v, vi) => {
+      templates.push({ id: `${cat}-${lang}-${vi + 1}`, cat, catLabel: `${catLabel} · ${LANGS[lang]}`, lang, tags: LANG_TAGS[lang] + ' ' + cat, name: `${pk.head.replace(/\n/g, ' ')} ${vi + 1}`, size: V2_SIZES[vi], layout: v[0], pal: v[1], opts: v[2] || {}, motif, head: pk.head, tag: pk.tag, sub: pk.sub, cta: pk.cta, badge: pk.badge, invite: pk.inv, foot: '📞 98765 43210   📍 ' + LFOOT[lang], premium: (v2n++) % 4 === 3 });
+    });
+  }));
 
   function build(t, W, H) {
     W = W || SZ[t.size][0]; H = H || SZ[t.size][1];
     const p = Object.assign({}, PAL[t.pal], { headFont: t.headFont, bgKey: t.pal });
-    return L[t.layout](W, H, t, p, t.opts);
+    const lf = t.lang && t.lang !== 'en' && LF[t.lang], saved = Object.assign({}, FONT);
+    if (lf) Object.keys(FONT).forEach(k => { FONT[k] = lf; }); // all text of non-English templates uses the language's own font
+    try { return L[t.layout](W, H, t, p, t.opts); } finally { Object.assign(FONT, saved); }
   }
-  function fontsFor(t) { const s = [FONT.body, FONT.anton, FONT.serif]; if (t.headFont) s.push(t.headFont); if (/[ഀ-ൿ]/.test(t.head + t.sub)) s.push(FONT.ml); return s; }
+  const sampleOf = t => [t.head, t.tag, t.sub, t.cta, t.badge, t.foot].join(' ');
+  function fontsFor(t) { const s = [FONT.body, FONT.anton, FONT.serif]; if (t.headFont) s.push(t.headFont); if (t.lang && LF[t.lang]) s.push(LF[t.lang]); else if (/[\u0D00-\u0D7F]/.test(t.head + t.sub)) s.push(FONT.ml); return s; }
 
   // ------------------------------------------------------------------ UI state
-  let query = '', catFilter = 'all', accessFilter = 'all', favs = [], extra = [];
+  let query = '', catFilter = 'all', accessFilter = 'all', langFilter = 'all', favs = [], extra = [];
   try { favs = JSON.parse(localStorage.getItem('studio_fav_tpl') || '[]'); } catch (e) { favs = []; }
   const thumbCache = {};
   const all = () => templates.concat(extra);
@@ -4897,7 +5078,7 @@ var StudioTpl = (() => {
     if (thumbCache[t.id]) return thumbCache[t.id];
     if (t.thumb) return t.thumb; // admin templates carry their own preview
     const W = SZ[t.size][0], H = SZ[t.size][1], s = 220 / Math.max(W, H);
-    await A().ensureFonts(fontsFor(t));
+    await A().ensureFonts(fontsFor(t), sampleOf(t));
     const spec = build(t, W, H), sc = new F.StaticCanvas(null, { width: Math.round(W * s), height: Math.round(H * s) });
     sc.setZoom(s); sc.backgroundColor = StudioLib.makeFill(spec.bg, W, H); spec.objs.forEach(o => sc.add(o)); sc.renderAll();
     const url = sc.toDataURL({ format: 'jpeg', quality: 0.8 }); sc.dispose && sc.dispose(); thumbCache[t.id] = url; return url;
@@ -4905,11 +5086,12 @@ var StudioTpl = (() => {
   function visible() {
     const q = query.trim().toLowerCase();
     return all().filter(t => (catFilter === 'all' || (catFilter === 'fav' ? favs.includes(t.id) : t.cat === catFilter)) &&
-      (accessFilter === 'all' || (accessFilter === 'free') === !t.premium) &&
+      (accessFilter === 'all' || (accessFilter === 'free') === !t.premium) && (langFilter === 'all' || (t.lang || 'en') === langFilter) &&
       (!q || (t.name + ' ' + t.catLabel + ' ' + (t.head || '') + ' ' + (t.tags || '')).toLowerCase().includes(q)));
   }
   function render(body) {
     const cats = CATS.map(c => [c[0], c[1]]);
+    Object.keys(CAT_META).forEach(id => { if (!cats.find(c => c[0] === id)) cats.push([id, CAT_META[id][0]]); });
     const extraCats = Array.from(new Set(extra.map(t => t.cat).filter(x => !cats.find(c => c[0] === x)))).map(x => [x, x]);
     body.innerHTML = `
       <input class="studio-search" type="search" placeholder="Search templates (offer, wedding, Eid, food…)" value="${esc(query)}" oninput="StudioTpl.setQuery(this.value)">
@@ -4918,6 +5100,7 @@ var StudioTpl = (() => {
         <button class="studio-chip ${catFilter === 'fav' ? 'active' : ''}" onclick="StudioTpl.setCat('fav')">♥ Favourites</button>
         ${cats.concat(extraCats).map(([id, l]) => `<button class="studio-chip ${catFilter === id ? 'active' : ''}" onclick="StudioTpl.setCat('${id}')">${esc(l)}</button>`).join('')}
       </div>
+      <div class="studio-chiprow">${[['all', 'All languages']].concat(Object.entries(LANGS)).map(([k, l]) => `<button class="studio-chip ${langFilter === k ? 'active' : ''}" onclick="StudioTpl.setLang('${k}')">${l}</button>`).join('')}</div>
       <div class="studio-chiprow">${[['all', 'Free + Premium'], ['free', 'Free'], ['premium', 'Premium']].map(([k, l]) => `<button class="studio-chip ${accessFilter === k ? 'active' : ''}" onclick="StudioTpl.setAccess('${k}')">${l}</button>`).join('')}</div>
       <div class="studio-tpl-grid" id="studioTplGrid"></div>`;
     paintGrid();
@@ -4946,6 +5129,7 @@ var StudioTpl = (() => {
   }
   function setQuery(v) { query = v; clearTimeout(setQuery.t); setQuery.t = setTimeout(paintGrid, 180); }
   function setCat(c) { catFilter = c; render(document.getElementById('studioDrawerBody')); }
+  function setLang(l) { langFilter = l; render(document.getElementById('studioDrawerBody')); }
   function setAccess(a) { accessFilter = a; render(document.getElementById('studioDrawerBody')); }
   function toggleFav(id) {
     favs = favs.includes(id) ? favs.filter(x => x !== id) : favs.concat(id);
@@ -4963,7 +5147,7 @@ var StudioTpl = (() => {
       Studio.api.loadDoc(Object.assign({}, t.doc, { id: null, name: t.name })); Studio.closeDrawer(); toast('Template loaded — everything is editable'); return;
     }
     const W = sizeOverride ? sizeOverride[0] : SZ[t.size][0], H = sizeOverride ? sizeOverride[1] : SZ[t.size][1];
-    await A().ensureFonts(fontsFor(t));
+    await A().ensureFonts(fontsFor(t), sampleOf(t));
     Studio.api.flushSave();
     Studio.api.loadBuilt({ name: t.name, width: W, height: H, kind: 'design', pages: [build(t, W, H)] });
     Studio.closeDrawer(); toast('Template loaded — everything is editable');
@@ -4980,7 +5164,7 @@ var StudioTpl = (() => {
 
   Studio.registerTab({ id: 'templates', label: 'Templates', icon: '▣', order: 10, render });
 
-  return { templates, CATS, SZ, build, fontsFor, setQuery, setCat, setAccess, toggleFav, use, useTemplate, preview, closePreview, usePreview, addExtra, bySize, thumbFor, FONT, PAL, L, favs: () => favs, all };
+  return { PACKS, LANGS, LF, CAT_META, templates, CATS, SZ, build, fontsFor, setQuery, setCat, setLang, setAccess, toggleFav, use, useTemplate, preview, closePreview, usePreview, addExtra, bySize, thumbFor, FONT, PAL, L, favs: () => favs, all };
 })();
 
 
@@ -5610,16 +5794,25 @@ var StudioStore = (() => {
   const todayStr = () => new Date().toISOString().slice(0, 10);
   const localKey = () => 'studio_dl_' + todayStr();
   const localExtra = () => { try { return parseInt(localStorage.getItem(localKey()) || '0'); } catch (e) { return 0; } };
-  const upgrade = msg => { toast(msg, true); Studio.exportDialogClose(); A().flushSave(); if (window.goto) goto('payment'); return false; };
+  const upgrade = msg => { toast(msg, true); try { Studio.exportDialogClose(); } catch (e) { /* ignore */ } try { if (window.VideoMaker) VideoMaker.close(); } catch (e) { /* ignore */ } A().flushSave(); if (window.goto) goto('payment'); return false; };
   async function beforeExport(o) {
     if (plan() !== 'free') { o.watermark = null; return true; }
+    if (o.format === 'video') { // free plan: limited number of video downloads (default 1), counted separately from images
+      try {
+        const lim = (STATE.settings && (STATE.settings.free_video_limit ?? STATE.settings.free_download_limit)) ?? 1;
+        let used = parseInt(localStorage.getItem('studio_dlv_' + todayStr()) || '0');
+        if (window.sb && userId()) { const { count } = await sb.from('downloads_log').select('id', { count: 'exact', head: true }).eq('user_id', userId()).eq('format', 'studio-video').gte('created_at', todayStr() + 'T00:00:00'); used = Math.max(used, count || 0); }
+        if (used >= lim) return upgrade('Free plan includes ' + lim + ' video download — upgrade for unlimited videos');
+      } catch (e) { /* don't block if the check itself fails */ }
+      return true;
+    }
     if (o.print && !CONFIG.freePrintPdf) return upgrade('Print-ready PDF is a Premium feature — upgrade to unlock');
     if (o.multiplier > 1.01 && !o.print && !CONFIG.freeHiRes) return upgrade('High-resolution export is a Premium feature — upgrade to unlock');
     if (o.transparent && !CONFIG.freeTransparent) return upgrade('Transparent PNG is a Premium feature — upgrade to unlock');
     try {
       const limit = (STATE.settings && STATE.settings.free_download_limit) ?? 1;
       let used = localExtra();
-      if (window.sb && userId()) { const { count } = await sb.from('downloads_log').select('id', { count: 'exact', head: true }).eq('user_id', userId()).gte('created_at', todayStr() + 'T00:00:00'); used = Math.max(used, count || 0); }
+      if (window.sb && userId()) { const { count } = await sb.from('downloads_log').select('id', { count: 'exact', head: true }).eq('user_id', userId()).neq('format', 'studio-video').gte('created_at', todayStr() + 'T00:00:00'); used = Math.max(used, count || 0); }
       if (used >= limit) return upgrade('Daily free download limit reached — upgrade for unlimited downloads');
     } catch (e) { /* if the check itself fails, don't block the user */ }
     o.watermark = (STATE.settings && STATE.settings.watermark_text) || 'OFFER POSTER STUDIO';
@@ -5627,11 +5820,11 @@ var StudioStore = (() => {
   }
   async function afterExport(o) {
     const d = A().doc(), s = A().size();
-    try { await put('history', { id: uid(), userId: userId(), name: d.name, format: o.format, w: Math.round(s.w * o.multiplier), h: Math.round(s.h * o.multiplier), ts: Date.now() }); } catch (e) { /* ignore */ }
+    try { await put('history', { id: uid(), userId: userId(), name: o.name || d.name, format: o.format, w: o.w || Math.round(s.w * o.multiplier), h: o.h || Math.round(s.h * o.multiplier), ts: Date.now() }); } catch (e) { /* ignore */ }
     if (plan() === 'free') {
       let ok = false;
       try { if (window.sb && userId()) { const r = await sb.from('downloads_log').insert({ user_id: userId(), format: 'studio-' + o.format, size_preset: 'studio', hd: false }); ok = !r.error; } } catch (e) { /* ignore */ }
-      if (!ok) { try { localStorage.setItem(localKey(), String(localExtra() + 1)); } catch (e) { /* ignore */ } }
+      if (!ok) { try { const k = o.format === 'video' ? 'studio_dlv_' + todayStr() : localKey(); localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || '0')) + 1)); } catch (e) { /* ignore */ } }
     }
   }
   const syncFavs = () => { };
@@ -5812,16 +6005,36 @@ var VideoMaker = (() => {
   const esc = s => (typeof escapeHtml === 'function' ? escapeHtml(String(s)) : String(s));
   const RATIOS = { '9:16': [720, 1280], '1:1': [1080, 1080], '16:9': [1280, 720], '4:5': [864, 1080] };
   const TRANS = [['fade', 'Fade'], ['slide', 'Slide'], ['zoom', 'Zoom'], ['none', 'Cut']];
-  const ANIMS = [['fade', 'Fade in'], ['up', 'Slide up'], ['zoom', 'Zoom in'], ['type', 'Typewriter'], ['none', 'None']];
+  const ANIMS = [['fade', 'Fade in'], ['up', 'Slide up'], ['zoom', 'Zoom in'], ['pop', 'Pop'], ['left', 'Slide from left'], ['type', 'Typewriter'], ['none', 'None']];
+  // Styles. Each style has its own colours + background decoration; the sample slide text comes from the
+  // multilingual packs in studio-tpl.js, so every style can start in English, Malayalam, Tamil, Kannada or Hindi.
   const THEMES = {
-    offer: { label: 'Offer reel', bg: ['#B91C1C', '#F59E0B'], accent: '#FACC15', text: '#ffffff', slides: ['MEGA OFFER', 'UP TO 50% OFF', 'LIMITED TIME', 'VISIT US TODAY'] },
-    festival: { label: 'Festival wishes', bg: ['#4C1D95', '#DB2777'], accent: '#FDE68A', text: '#ffffff', slides: ['HAPPY FESTIVAL', 'Wishing you joy & light', 'From our family to yours'] },
-    product: { label: 'Product showcase', bg: ['#0B1B3A', '#1E3A8A'], accent: '#38BDF8', text: '#ffffff', slides: ['NEW ARRIVAL', 'Premium Quality', 'Order Now'] },
-    clean: { label: 'Clean light', bg: ['#F8FAFC', '#E2E8F0'], accent: '#0E6E5D', text: '#0B1B3A', slides: ['Our Story', 'Crafted with care', 'Follow us'] }
+    offer: { label: '🔥 Offer reel', cat: 'offer', bg: ['#B91C1C', '#F59E0B'], accent: '#FACC15', text: '#ffffff', deco: 'rays' },
+    sale: { label: '🛍️ Big sale', cat: 'sale', bg: ['#0B1B3A', '#1E3A8A'], accent: '#38BDF8', text: '#ffffff', deco: 'stripes' },
+    festival: { label: '🪔 Festival wishes', cat: 'festival', bg: ['#EA580C', '#FACC15'], accent: '#7C2D12', text: '#ffffff', deco: 'sparkle' },
+    eid: { label: '🌙 Eid / Ramadan', cat: 'eid', bg: ['#064E3B', '#10B981'], accent: '#FDE68A', text: '#ffffff', deco: 'sparkle' },
+    birthday: { label: '🎂 Birthday', cat: 'birthday', bg: ['#701A75', '#C026D3'], accent: '#FDE68A', text: '#ffffff', deco: 'dots' },
+    wedding: { label: '💍 Wedding', cat: 'wedding', bg: ['#FBF6EA', '#F3E3C3'], accent: '#B8860B', text: '#3B2A10', deco: 'frame' },
+    food: { label: '🍔 Food & restaurant', cat: 'food', bg: ['#B45309', '#EF4444'], accent: '#FDE047', text: '#ffffff', deco: 'dots' },
+    jewellery: { label: '💎 Jewellery gold', cat: 'jewellery', bg: ['#1C1917', '#44403C'], accent: '#D4A537', text: '#FBF6EA', deco: 'frame' },
+    education: { label: '🎓 Education', cat: 'education', bg: ['#0369A1', '#22D3EE'], accent: '#FDE047', text: '#ffffff', deco: 'circles' },
+    realestate: { label: '🏠 Real estate', cat: 'realestate', bg: ['#14532D', '#65A30D'], accent: '#FDE047', text: '#ffffff', deco: 'stripes' },
+    event: { label: '🎤 Event / concert', cat: 'event', bg: ['#4C1D95', '#DB2777'], accent: '#FDE68A', text: '#ffffff', deco: 'rays' },
+    business: { label: '💼 Business', cat: 'business', bg: ['#0E6E5D', '#14B8A6'], accent: '#CC9A3C', text: '#ffffff', deco: 'circles' },
+    fashion: { label: '👗 Fashion', cat: 'fashion', bg: ['#BE185D', '#FB7185'], accent: '#FEF08A', text: '#ffffff', deco: 'circles' },
+    opening: { label: '🎊 Grand opening', cat: 'opening', bg: ['#4C1D95', '#2563EB'], accent: '#FACC15', text: '#ffffff', deco: 'sparkle' },
+    neon: { label: '⚡ Neon night', cat: 'event', bg: ['#020617', '#312E81'], accent: '#22D3EE', text: '#ffffff', deco: 'neon' },
+    clean: { label: '🤍 Clean light', cat: 'business', bg: ['#F8FAFC', '#E2E8F0'], accent: '#0E6E5D', text: '#0B1B3A', deco: 'circles' }
   };
+  const LANG_LABEL = { en: 'English', ml: 'മലയാളം', ta: 'தமிழ்', kn: 'ಕನ್ನಡ', hi: 'हिन्दी' };
+  const slidesFor = (theme, lang) => {
+    const pk = (StudioTpl.PACKS[lang] || StudioTpl.PACKS.en)[THEMES[theme].cat];
+    return pk.inv ? [pk.head, pk.inv.names, pk.inv.line1, pk.inv.line2] : [pk.head, pk.tag, pk.sub, pk.cta];
+  };
+  const fontOf = () => (S.lang !== 'en' && StudioTpl.LF[S.lang] ? StudioTpl.LF[S.lang] + ',' : '') + "'Anton','Baloo Chettan 2','Noto Sans Malayalam',sans-serif";
   let S = null, raf = 0, playing = false, t0 = 0, recorder = null;
 
-  const fresh = () => ({ ratio: '9:16', trans: 'fade', theme: 'offer', slides: [], music: null, vol: 0.8, brand: '', cur: 0, loop: false });
+  const fresh = () => ({ ratio: '9:16', trans: 'fade', theme: 'offer', lang: 'en', slides: [], music: null, vol: 0.8, brand: '', cur: 0, loop: false });
   const total = () => S.slides.reduce((a, s) => a + s.dur, 0);
   const dims = () => RATIOS[S.ratio];
   const plan = () => (window.STATE && STATE.profile && STATE.profile.plan) || 'free';
@@ -5836,12 +6049,13 @@ var VideoMaker = (() => {
           <div class="studio-actions"><button class="btn btn-outline btn-sm" id="vmPlayBtn" onclick="VideoMaker.togglePlay()">▶ Preview</button><button class="btn btn-primary btn-sm" onclick="VideoMaker.exportVideo()">⬇ Export</button></div>
           <p class="studio-hint" id="vmInfo"></p></div>
         <div style="flex:1;min-width:220px" class="studio-form">
-          <label class="studio-label">Style</label><select id="vmTheme" onchange="VideoMaker.setTheme(this.value)">${Object.entries(THEMES).map(([k, t]) => `<option value="${k}" ${S.theme === k ? 'selected' : ''}>${t.label}</option>`).join('')}</select>
+          <label class="studio-label">Style (${Object.keys(THEMES).length} styles)</label><select id="vmTheme" onchange="VideoMaker.setTheme(this.value)">${Object.entries(THEMES).map(([k, t]) => `<option value="${k}" ${S.theme === k ? 'selected' : ''}>${t.label}</option>`).join('')}</select>
+          <label class="studio-label">Language of sample text</label><select onchange="VideoMaker.setLang(this.value)">${Object.entries(LANG_LABEL).map(([k, l]) => `<option value="${k}" ${S.lang === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
           <label class="studio-label">Transition</label><select onchange="VideoMaker.setTrans(this.value)">${TRANS.map(t => `<option value="${t[0]}" ${S.trans === t[0] ? 'selected' : ''}>${t[1]}</option>`).join('')}</select>
           <label class="studio-label">Brand / watermark text (optional)</label><input type="text" value="${esc(S.brand)}" oninput="VideoMaker.setBrand(this.value)" placeholder="Your shop name">
           <label class="studio-label">Music (optional)</label><input type="file" accept="audio/*" onchange="VideoMaker.setMusic(this)"><div id="vmMusic" class="studio-hint">${S.music ? esc(S.music.name) : 'No music'}</div>
           <label class="studio-label">Add photos / video clips</label><input type="file" accept="image/*,video/*" multiple onchange="VideoMaker.addFiles(this)">
-          <div class="studio-actions"><button class="btn btn-outline btn-sm" onclick="VideoMaker.addTextSlide()">＋ Text slide</button><button class="btn btn-outline btn-sm" onclick="VideoMaker.fromTheme()">Start from style</button></div>
+          <div class="studio-actions"><button class="btn btn-outline btn-sm" onclick="VideoMaker.addTextSlide()">＋ Text slide</button><button class="btn btn-outline btn-sm" onclick="VideoMaker.fromTheme()">Fill text slides from style</button></div>
         </div></div>
       <label class="studio-label">Slides</label><div id="vmSlides"></div>
       <div class="studio-actions"><button class="btn btn-outline" onclick="VideoMaker.close()">Close</button></div>`);
@@ -5855,15 +6069,17 @@ var VideoMaker = (() => {
   function setRatio(r) { stop(); S.ratio = r; open(); }
   function setTrans(v) { S.trans = v; }
   function setBrand(v) { S.brand = v; }
-  function setTheme(v) { S.theme = v; draw(S.cur ? 0 : 0); }
+  function setTheme(v) { S.theme = v; if (S.slides.every(x => x.type === 'text')) fromTheme(); else draw(0); }
+  function setLang(v) { S.lang = v; if (S.slides.every(x => x.type === 'text')) fromTheme(); else draw(0); }
 
   // ------------------------------------------------------------------ slides
   const mk = o => Object.assign({ type: 'text', dur: 3, text: '', anim: 'fade', pos: 'bottom', el: null, src: '', name: '' }, o);
-  function fromTheme() {
-    const th = THEMES[S.theme];
-    S.slides = th.slides.map(t => mk({ type: 'text', text: t, dur: 2.5, anim: 'zoom', pos: 'center' }));
+  async function fromTheme() {
+    const texts = slidesFor(S.theme, S.lang); await ensureVidFonts(texts.join(' '));
+    S.slides = texts.map((t, i) => mk({ type: 'text', text: t, dur: i === 0 ? 3 : 2.5, anim: ['pop', 'fade', 'up', 'zoom'][i % 4], pos: 'center' }));
     renderSlides(); draw(0);
   }
+  async function ensureVidFonts(sample) { if (!document.fonts || !document.fonts.load) return; const fam = fontOf().split(',').filter(x => x.includes("'") || x.includes('Baloo')).slice(0, 3); try { await Promise.race([Promise.all(fam.map(f => document.fonts.load('800 40px ' + f.trim(), sample))), new Promise(r => setTimeout(r, 2500))]); } catch (e) { /* ignore */ } }
   function addTextSlide() { S.slides.push(mk({ type: 'text', text: 'Your text', dur: 2.5, anim: 'fade', pos: 'center' })); renderSlides(); }
   async function addFiles(input) {
     for (const f of Array.from(input.files || [])) {
@@ -5909,6 +6125,18 @@ var VideoMaker = (() => {
     const iw = el.videoWidth || el.naturalWidth || el.width, ih = el.videoHeight || el.naturalHeight || el.height; if (!iw || !ih) return;
     const s = Math.max(W / iw, H / ih) * zoom, w = iw * s, h = ih * s; ctx.drawImage(el, (W - w) / 2 + ox, (H - h) / 2 + oy, w, h);
   }
+  function deco(ctx, th, W, H, t) {
+    const u = Math.min(W, H), dark = th.text !== '#ffffff' && th.text !== '#FBF6EA' ? 0.1 : 0.12; ctx.save();
+    const lightFill = th.text === '#ffffff' || th.text === '#FBF6EA' ? 'rgba(255,255,255,' : 'rgba(0,0,0,';
+    if (th.deco === 'rays') { ctx.translate(W / 2, H * 0.45); ctx.rotate(t * 0.15); ctx.fillStyle = lightFill + '0.10)'; for (let i = 0; i < 24; i += 2) { const a1 = i / 24 * 6.2832, a2 = (i + 1) / 24 * 6.2832, R = Math.hypot(W, H); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a1) * R, Math.sin(a1) * R); ctx.lineTo(Math.cos(a2) * R, Math.sin(a2) * R); ctx.fill(); } }
+    else if (th.deco === 'stripes') { ctx.fillStyle = lightFill + '0.07)'; ctx.translate(0, 0); const off = (t * 40) % (u * 0.2); for (let x = -H; x < W + H; x += u * 0.2) { ctx.save(); ctx.translate(x + off, 0); ctx.rotate(0.45); ctx.fillRect(0, -H, u * 0.08, H * 3); ctx.restore(); } }
+    else if (th.deco === 'dots') { ctx.fillStyle = lightFill + '0.12)'; for (let i = 0; i < 26; i++) { const x = ((i * 137.5) % 100) / 100 * W, y = (((i * 61.8) + t * 12) % 100) / 100 * H; ctx.beginPath(); ctx.arc(x, y, u * (0.01 + (i % 4) * 0.008), 0, 7); ctx.fill(); } }
+    else if (th.deco === 'sparkle') { ctx.fillStyle = th.accent; for (let i = 0; i < 18; i++) { const x = ((i * 97.3) % 100) / 100 * W, y = ((i * 53.7) % 100) / 100 * H, k = 0.5 + 0.5 * Math.sin(t * 3 + i), r = u * 0.018 * (0.4 + k); ctx.globalAlpha = 0.25 + 0.5 * k; ctx.beginPath(); ctx.moveTo(x, y - r * 2); ctx.lineTo(x + r * 0.5, y - r * 0.5); ctx.lineTo(x + r * 2, y); ctx.lineTo(x + r * 0.5, y + r * 0.5); ctx.lineTo(x, y + r * 2); ctx.lineTo(x - r * 0.5, y + r * 0.5); ctx.lineTo(x - r * 2, y); ctx.lineTo(x - r * 0.5, y - r * 0.5); ctx.closePath(); ctx.fill(); } }
+    else if (th.deco === 'frame') { ctx.strokeStyle = th.accent; ctx.lineWidth = u * 0.008; const m = u * 0.05; ctx.strokeRect(m, m, W - m * 2, H - m * 2); ctx.lineWidth = u * 0.003; ctx.strokeRect(m * 1.5, m * 1.5, W - m * 3, H - m * 3); }
+    else if (th.deco === 'neon') { ctx.strokeStyle = th.accent; ctx.shadowColor = th.accent; ctx.shadowBlur = u * 0.04; ctx.lineWidth = u * 0.006; const m = u * 0.06, r = u * 0.05; ctx.beginPath(); ctx.moveTo(m + r, m); ctx.arcTo(W - m, m, W - m, H - m, r); ctx.arcTo(W - m, H - m, m, H - m, r); ctx.arcTo(m, H - m, m, m, r); ctx.arcTo(m, m, W - m, m, r); ctx.closePath(); ctx.stroke(); }
+    else { ctx.fillStyle = lightFill + (dark > 0.11 ? '0.08)' : '0.06)'); ctx.beginPath(); ctx.arc(W * 0.85 + Math.sin(t) * u * 0.02, H * 0.15, u * 0.35, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(W * 0.1, H * 0.9 + Math.cos(t) * u * 0.02, u * 0.3, 0, 7); ctx.fill(); }
+    ctx.restore();
+  }
   function drawSlide(ctx, s, lt, W, H, tr) { // lt = local time; tr = {kind, p, dir} for the incoming slide
     const th = THEMES[S.theme], u = Math.min(W, H);
     ctx.save();
@@ -5921,14 +6149,14 @@ var VideoMaker = (() => {
     const kb = 1 + 0.08 * Math.min(1, lt / Math.max(0.5, s.dur)); // slow Ken-Burns zoom
     if (s.type === 'image') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); drawCover(ctx, s.el, W, H, kb, 0, 0); }
     else if (s.type === 'video') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); drawCover(ctx, s.el, W, H, 1, 0, 0); }
-    else { const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, th.bg[0]); g.addColorStop(1, th.bg[1]); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.beginPath(); ctx.arc(W * 0.85, H * 0.15, u * 0.35, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(W * 0.1, H * 0.9, u * 0.3, 0, 7); ctx.fill(); }
+    else { const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, th.bg[0]); g.addColorStop(1, th.bg[1]); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); deco(ctx, th, W, H, lt); }
     if (s.text) {
       if (s.type !== 'text') { const gr = ctx.createLinearGradient(0, H * 0.5, 0, H); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.55)'); ctx.fillStyle = gr; ctx.fillRect(0, H * 0.5, W, H * 0.5); }
-      const p = ease(lt / 0.7); let txt = s.text, alpha = 1, dy = 0, sc = 1;
-      if (s.anim === 'fade') alpha = p; else if (s.anim === 'up') { alpha = p; dy = (1 - p) * u * 0.08; } else if (s.anim === 'zoom') { alpha = p; sc = 0.6 + 0.4 * p; } else if (s.anim === 'type') txt = s.text.slice(0, Math.ceil(s.text.length * Math.min(1, lt / Math.max(0.8, s.dur * 0.6))));
-      const size = Math.round(u * (s.type === 'text' ? 0.085 : 0.06)); ctx.font = `800 ${size}px 'Anton','Baloo Chettan 2','Noto Sans Malayalam',sans-serif`;
+      const p = ease(lt / 0.7); let txt = s.text, alpha = 1, dy = 0, dx = 0, sc = 1;
+      if (s.anim === 'fade') alpha = p; else if (s.anim === 'up') { alpha = p; dy = (1 - p) * u * 0.08; } else if (s.anim === 'zoom') { alpha = p; sc = 0.6 + 0.4 * p; } else if (s.anim === 'pop') { const q = Math.min(1, lt / 0.6), o = 1.70158; alpha = Math.min(1, lt / 0.25); sc = 1 + (o + 1) * Math.pow(q - 1, 3) + o * Math.pow(q - 1, 2); sc = Math.max(0.01, sc); } else if (s.anim === 'left') { alpha = p; dx = -(1 - p) * W * 0.5; } else if (s.anim === 'type') txt = s.text.slice(0, Math.ceil(s.text.length * Math.min(1, lt / Math.max(0.8, s.dur * 0.6))));
+      const size = Math.round(u * (s.type === 'text' ? 0.085 : 0.06)); ctx.font = `800 ${size}px ${fontOf()}`;
       const lines = wrap(ctx, txt, W * 0.84), lh = size * 1.18, bh = lines.length * lh, cy = s.pos === 'top' ? H * 0.18 : s.pos === 'center' ? H * 0.5 : H * 0.82 - bh / 2;
-      ctx.globalAlpha *= alpha; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.translate(W / 2, cy + dy); ctx.scale(sc, sc);
+      ctx.globalAlpha *= alpha; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.translate(W / 2 + dx, cy + dy); ctx.scale(sc, sc);
       const light = s.type !== 'text' || th.text === '#ffffff';
       ctx.lineJoin = 'round'; ctx.lineWidth = size * 0.14; ctx.strokeStyle = light ? 'rgba(0,0,0,0.55)' : 'rgba(255,255,255,0.7)'; ctx.fillStyle = s.type === 'text' ? th.text : '#ffffff';
       lines.forEach((l, k) => { const y = (k - (lines.length - 1) / 2) * lh; ctx.strokeText(l, 0, y); ctx.fillText(l, 0, y); });
@@ -5993,6 +6221,7 @@ var VideoMaker = (() => {
     const c = document.getElementById('vmCanvas'), mime = pickMime();
     if (!c.captureStream || !mime) return toast('This browser cannot record video. Try Chrome or Safari.', true);
     if (total() > FREE_MAX_SEC && plan() === 'free') toast(`Free plan exports the first ${FREE_MAX_SEC} seconds — upgrade for full length`);
+    if (window.StudioStore) { const gate = { format: 'video', multiplier: 1, transparent: false, print: false }; if (!(await StudioStore.beforeExport(gate))) return; }
     stop();
     const stream = c.captureStream(30); let actx = null;
     if (S.music) {
@@ -6007,9 +6236,10 @@ var VideoMaker = (() => {
     if (S.music) S.music.el.pause(); if (actx) { try { actx.close(); } catch (e) { /* ignore */ } S.music && (S.music.el = S.music.el); }
     const ext = mime.startsWith('video/mp4') ? 'mp4' : 'webm', blob = new Blob(chunks, { type: mime.split(';')[0] }), url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `video_${Date.now()}.${ext}`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
+    if (window.StudioStore) StudioStore.afterExport({ format: 'video', multiplier: 1, name: 'Video', w: c.width, h: c.height });
     toast(ext === 'mp4' ? 'Video exported (MP4)' : 'Video exported as WebM (this browser cannot record MP4)');
   }
 
-  return { open, close, setRatio, setTrans, setBrand, setTheme, setMusic, addFiles, addTextSlide, fromTheme, upd, move, del, togglePlay, exportVideo, THEMES, pickMime };
+  return { open, close, setRatio, setTrans, setBrand, setTheme, setLang, setMusic, addFiles, addTextSlide, fromTheme, upd, move, del, togglePlay, exportVideo, THEMES, pickMime };
 })();
 
